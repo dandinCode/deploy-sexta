@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import type { GameState } from '../engine/types.js';
+import { prisma, useMemory } from '../db.js';
 
 type StoredGame = {
   id: string;
@@ -8,10 +9,7 @@ type StoredGame = {
   score: number | null;
 };
 
-const useMemory = process.env.MEMORY_STORE === '1';
-
 const memory = new Map<string, StoredGame>();
-const prisma = useMemory ? null : new PrismaClient();
 
 export class GameRepository {
   async create(state: GameState) {
@@ -57,7 +55,7 @@ export class GameRepository {
       return row;
     }
 
-    return prisma.game.update({
+    return (prisma as PrismaClient).game.update({
       where: { id: state.id },
       data: {
         state: state as unknown as Prisma.InputJsonValue,
