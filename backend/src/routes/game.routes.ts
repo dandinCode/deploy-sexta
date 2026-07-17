@@ -61,4 +61,16 @@ export async function gameRoutes(app: FastifyInstance) {
       });
     }
   });
+
+  app.get('/ranking', async (request) => {
+    const query = z
+      .object({
+        by: z.enum(['wealth', 'longevity']).default('wealth'),
+        limit: z.coerce.number().int().min(1).max(50).default(20),
+      })
+      .parse(request.query ?? {});
+
+    const entries = await gameService.getRanking(query.by, query.limit);
+    return { by: query.by, entries };
+  });
 }
