@@ -4,6 +4,7 @@ import { DraftCard } from '@/components/DraftCard';
 import { StatusBar } from '@/components/StatusBar';
 import { EventPanel } from '@/components/EventPanel';
 import { EndScreen } from '@/components/EndScreen';
+import { RankingBoard } from '@/components/RankingBoard';
 import { useGameStore } from '@/store/gameStore';
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
     selectedCards,
     loading,
     error,
+    playerRanks,
     loadMeta,
     startGame,
     toggleCard,
@@ -35,40 +37,48 @@ export default function App() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--accent-dim),_transparent_55%),linear-gradient(180deg,_#0b1210_0%,_#07100e_50%,_#050a09_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:48px_48px]" />
 
-        <main className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-16">
-          <p className="mb-4 font-mono text-xs tracking-[0.3em] text-[var(--accent)]">
-            CARREIRA ROGUELIKE · TECH
-          </p>
-          <h1 className="mb-4 font-[family-name:var(--font-display)] text-6xl font-extrabold leading-none tracking-tight md:text-7xl">
-            Deploy
-            <br />
-            Sexta
-          </h1>
-          <p className="mb-10 max-w-md text-lg text-[var(--muted)]">
-            Monte sua identidade com cartas de lendas da computação. Sobreviva ao
-            mercado. Evite o deploy de sexta.
-          </p>
+        <main className="relative mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-16">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+            <div>
+              <p className="mb-4 font-mono text-xs tracking-[0.3em] text-[var(--accent)]">
+                CARREIRA ROGUELIKE · TECH
+              </p>
+              <h1 className="mb-4 font-[family-name:var(--font-display)] text-6xl font-extrabold leading-none tracking-tight md:text-7xl">
+                Deploy
+                <br />
+                Sexta
+              </h1>
+              <p className="mb-10 max-w-md text-lg text-[var(--muted)]">
+                Monte sua identidade com cartas de lendas da computação. Sobreviva ao
+                mercado. Entre no ranking mundial.
+              </p>
 
-          <label className="mb-2 font-mono text-xs text-[var(--muted)]">
-            NOME DO PERSONAGEM
-          </label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={40}
-            className="mb-6 h-12 w-full max-w-md border border-[var(--border)] bg-[var(--panel)] px-4 font-mono text-[var(--text)] outline-none focus:border-[var(--accent)]"
-          />
+              <label className="mb-2 font-mono text-xs text-[var(--muted)]">
+                NOME DO PERSONAGEM
+              </label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={40}
+                className="mb-6 h-12 w-full max-w-md border border-[var(--border)] bg-[var(--panel)] px-4 font-mono text-[var(--text)] outline-none focus:border-[var(--accent)]"
+              />
 
-          <Button
-            size="lg"
-            disabled={loading || !name.trim()}
-            onClick={() => void startGame(name.trim())}
-            className="w-fit"
-          >
-            {loading ? 'Iniciando...' : 'Começar draft'}
-          </Button>
+              <Button
+                size="lg"
+                disabled={loading || !name.trim()}
+                onClick={() => void startGame(name.trim())}
+                className="w-fit"
+              >
+                {loading ? 'Iniciando...' : 'Começar draft'}
+              </Button>
 
-          {error && <p className="mt-4 font-mono text-sm text-[var(--danger)]">{error}</p>}
+              {error && (
+                <p className="mt-4 font-mono text-sm text-[var(--danger)]">{error}</p>
+              )}
+            </div>
+
+            <RankingBoard compact className="animate-fade-in" />
+          </div>
         </main>
       </div>
     );
@@ -122,7 +132,7 @@ export default function App() {
   if (game.status === 'finished') {
     return (
       <div className="min-h-screen bg-[var(--bg)] px-4 py-10 md:px-8">
-        <EndScreen game={game} onRestart={reset} />
+        <EndScreen game={game} ranks={playerRanks} onRestart={reset} />
       </div>
     );
   }
