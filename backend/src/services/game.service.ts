@@ -11,6 +11,7 @@ import {
 } from '../engine/index.js';
 import type { GameState } from '../engine/types.js';
 import { gameRepository } from './game.repository.js';
+import { rankingService, type RankingCategory } from './ranking.service.js';
 
 export class GameService {
   async startGame(name: string, seed?: number) {
@@ -42,7 +43,21 @@ export class GameService {
     const state = row.state as unknown as GameState;
     const next = chooseOption(state, optionId, DEFAULT_CONFIG);
     await gameRepository.save(next);
-    return this.toPublic(next);
+
+    let ranking = null;
+    if (next.status === 'finished') {
+      await rankingService.submitFromGame(next);
+      ranking = await rankingService.getPlayerRanks(next.id);
+    }
+
+    return {
+      ...this.toPublic(next),
+      ranking,
+    };
+  }
+
+  async getRanking(category: RankingCategory, limit = 20) {
+    return rankingService.list(category, limit);
   }
 
   getMeta() {
