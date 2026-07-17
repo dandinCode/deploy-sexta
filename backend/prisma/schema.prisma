@@ -8,16 +8,35 @@ datasource db {
 }
 
 model Game {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   state     Json
   status    GameStatus @default(DRAFT)
   score     Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  leaderboardEntry LeaderboardEntry?
 }
 
 enum GameStatus {
   DRAFT
   PLAYING
   FINISHED
+}
+
+/// Ranking mundial anônimo — 1 entrada por partida finalizada.
+model LeaderboardEntry {
+  id           String   @id @default(cuid())
+  gameId       String   @unique
+  game         Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  playerName   String
+  wealth       Int
+  monthsPlayed Int
+  peakSalary   Int
+  score        Int
+  endReason    String
+  createdAt    DateTime @default(now())
+
+  @@index([wealth(sort: Desc)])
+  @@index([monthsPlayed(sort: Desc)])
 }
