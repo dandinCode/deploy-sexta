@@ -1,0 +1,12 @@
+{
+  "name": "deploy-sexta",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "smoke": "npm --prefix backend exec tsx src/engine/smoke.ts"
+  }
+}

@@ -1,0 +1,127 @@
+import type { PersonalityCard } from '../../engine/types.js';
+
+/**
+ * Add new personality cards here — engine picks from this catalog.
+ * No engine changes required.
+ */
+export const personalityCards: PersonalityCard[] = [
+  {
+    id: 'turing',
+    name: 'Alan Turing',
+    title: 'Pai da Computação',
+    description: 'Raciocínio formal e quebra de padrões impossíveis.',
+    bonuses: { logic: 18, architecture: 8, discipline: 6 },
+  },
+  {
+    id: 'linus',
+    name: 'Linus Torvalds',
+    title: 'Kernel Overlord',
+    description: 'Sistemas, open source e opiniões afiadas.',
+    bonuses: { backend: 12, devops: 10, reputation: 6, communication: -4 },
+    skillBonuses: { docker: 10 },
+  },
+  {
+    id: 'hamilton',
+    name: 'Margaret Hamilton',
+    title: 'Engenharia de Software',
+    description: 'Software que não pode falhar.',
+    bonuses: { architecture: 14, discipline: 12, logic: 8 },
+  },
+  {
+    id: 'hopper',
+    name: 'Grace Hopper',
+    title: 'Rainha dos Compiladores',
+    description: 'Linguagens, debugging e pioneirismo.',
+    bonuses: { logic: 10, creativity: 8, leadership: 8, communication: 6 },
+  },
+  {
+    id: 'knuth',
+    name: 'Donald Knuth',
+    title: 'Art of Computer Programming',
+    description: 'Algoritmos como arte.',
+    bonuses: { logic: 16, discipline: 10, creativity: 6 },
+    skillBonuses: { python: 5 },
+  },
+  {
+    id: 'fowler',
+    name: 'Martin Fowler',
+    title: 'Arquiteto Pragmático',
+    description: 'Refatoração, padrões e clareza.',
+    bonuses: { architecture: 16, communication: 8, backend: 6 },
+  },
+  {
+    id: 'beck',
+    name: 'Kent Beck',
+    title: 'Ágil & TDD',
+    description: 'Metodologias, testes e ciclos curtos.',
+    bonuses: { discipline: 12, creativity: 8, leadership: 6, architecture: 6 },
+  },
+  {
+    id: 'jobs',
+    name: 'Steve Jobs',
+    title: 'Produto & Visão',
+    description: 'Comunicação, design e obsessão por produto.',
+    bonuses: { communication: 14, creativity: 12, business: 10, reputation: 8 },
+  },
+  {
+    id: 'gates',
+    name: 'Bill Gates',
+    title: 'Negócios & Escala',
+    description: 'Mercado, estratégia e execução.',
+    bonuses: { business: 16, leadership: 10, networking: 8 },
+  },
+  {
+    id: 'guido',
+    name: 'Guido van Rossum',
+    title: 'BDFL do Python',
+    description: 'Simplicidade como princípio.',
+    bonuses: { creativity: 10, communication: 8, backend: 8, discipline: 6 },
+    skillBonuses: { python: 15 },
+  },
+  {
+    id: 'ritchie',
+    name: 'Dennis Ritchie',
+    title: 'C & Unix',
+    description: 'Fundamentos que sustentam o mundo.',
+    bonuses: { backend: 14, logic: 10, devops: 8 },
+  },
+  {
+    id: 'hejlsberg',
+    name: 'Anders Hejlsberg',
+    title: 'TypeScript Architect',
+    description: 'Linguagens tipadas e DX.',
+    bonuses: { frontend: 10, backend: 10, architecture: 10 },
+    skillBonuses: { react: 8, node: 8 },
+  },
+  {
+    id: 'eich',
+    name: 'Brendan Eich',
+    title: 'JavaScript em 10 dias',
+    description: 'Prototipagem rápida e web.',
+    bonuses: { frontend: 14, creativity: 10 },
+    skillBonuses: { react: 12, node: 6 },
+  },
+  {
+    id: 'dean',
+    name: 'Jeff Dean',
+    title: 'Infra at Scale',
+    description: 'Escalabilidade e sistemas distribuídos.',
+    bonuses: { cloud: 14, architecture: 12, backend: 10, ai: 6 },
+    skillBonuses: { aws: 10, kubernetes: 8 },
+  },
+  {
+    id: 'carmack',
+    name: 'John Carmack',
+    title: 'Performance Obsessive',
+    description: 'Cada ciclo de CPU importa.',
+    bonuses: { logic: 12, backend: 10, discipline: 10, creativity: 6 },
+    skillBonuses: { rust: 8, go: 6 },
+  },
+  {
+    id: 'stroustrup',
+    name: 'Bjarne Stroustrup',
+    title: 'C++ Designer',
+    description: 'Poder com complexidade controlada.',
+    bonuses: { backend: 12, architecture: 10, logic: 10, discipline: 6 },
+  },
+];
