@@ -1,4 +1,10 @@
-import type { GameState, MetaResponse } from '../types/game';
+import type {
+  GameState,
+  GameStateWithRanking,
+  MetaResponse,
+  RankingCategory,
+  RankingResponse,
+} from '../types/game';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api';
 
@@ -29,8 +35,10 @@ export const api = {
       body: JSON.stringify({ cardIds }),
     }),
   chooseOption: (id: string, optionId: string) =>
-    request<GameState>(`/games/${id}/choose`, {
+    request<GameStateWithRanking>(`/games/${id}/choose`, {
       method: 'POST',
       body: JSON.stringify({ optionId }),
     }),
+  getRanking: (by: RankingCategory = 'wealth', limit = 20) =>
+    request<RankingResponse>(`/ranking?by=${by}&limit=${limit}`),
 };

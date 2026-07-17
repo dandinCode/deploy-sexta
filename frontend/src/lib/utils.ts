@@ -13,6 +13,14 @@ export function formatMoney(value: number): string {
   }).format(value);
 }
 
+export function formatCareerLength(months: number): string {
+  const years = Math.floor(months / 12);
+  const rest = months % 12;
+  if (years === 0) return `${rest} mês${rest === 1 ? '' : 'es'}`;
+  if (rest === 0) return `${years} ano${years === 1 ? '' : 's'}`;
+  return `${years}a ${rest}m`;
+}
+
 export const ATTRIBUTE_LABELS: Record<string, string> = {
   logic: 'Lógica',
   communication: 'Comunicação',
