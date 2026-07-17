@@ -104,3 +104,33 @@ export interface MetaResponse {
     startYear: number;
   };
 }
+
+export type RankingCategory = 'wealth' | 'longevity';
+
+export interface RankingEntry {
+  id: string;
+  gameId: string;
+  playerName: string;
+  wealth: number;
+  monthsPlayed: number;
+  peakSalary: number;
+  score: number;
+  endReason: string;
+  createdAt: string;
+  rank: number;
+}
+
+export interface RankingResponse {
+  by: RankingCategory;
+  entries: RankingEntry[];
+}
+
+export interface PlayerRanks {
+  wealth: number | null;
+  longevity: number | null;
+}
+
+export interface GameStateWithRanking extends GameState {
+  ranking?: PlayerRanks | null;
+}
+
