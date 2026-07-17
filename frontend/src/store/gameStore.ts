@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { api } from '../api/client';
-import type { GameState, MetaResponse } from '../types/game';
+import type { GameState, MetaResponse, PlayerRanks } from '../types/game';
 
 interface GameStore {
   game: GameState | null;
@@ -8,6 +8,7 @@ interface GameStore {
   selectedCards: string[];
   loading: boolean;
   error: string | null;
+  playerRanks: PlayerRanks | null;
   loadMeta: () => Promise<void>;
   startGame: (name: string) => Promise<void>;
   toggleCard: (id: string) => void;
@@ -22,6 +23,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   selectedCards: [],
   loading: false,
   error: null,
+  playerRanks: null,
 
   loadMeta: async () => {
     try {
@@ -33,7 +35,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   startGame: async (name: string) => {
-    set({ loading: true, error: null, selectedCards: [] });
+    set({ loading: true, error: null, selectedCards: [], playerRanks: null });
     try {
       const game = await api.startGame(name);
       set({ game, loading: false });
@@ -82,7 +84,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const next = await api.chooseOption(game.id, optionId);
-      set({ game: next, loading: false });
+      const { ranking, ...gameState } = next;
+      set({
+        game: gameState,
+        playerRanks: ranking ?? null,
+        loading: false,
+      });
     } catch (err) {
       set({
         loading: false,
@@ -91,5 +98,6 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
 
-  reset: () => set({ game: null, selectedCards: [], error: null }),
+  reset: () =>
+    set({ game: null, selectedCards: [], error: null, playerRanks: null }),
 }));
