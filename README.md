@@ -68,6 +68,9 @@ npm run dev
 | GET | `/api/games/:id` | Estado da partida |
 | POST | `/api/games/:id/draft` | Escolher 3 cartas (`{ cardIds }`) |
 | POST | `/api/games/:id/choose` | Escolher opção do evento (`{ optionId }`) |
+| GET | `/api/ranking?by=wealth\|longevity` | Ranking mundial (top 20) |
+
+Ao finalizar uma carreira, a entrada entra automaticamente no ranking (patrimônio + longevidade).
 
 ## Extensibilidade
 
