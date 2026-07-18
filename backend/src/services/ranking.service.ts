@@ -1,7 +1,7 @@
 import type { GameState } from '../engine/types.js';
 import { prisma, useMemory } from '../db.js';
 
-export type RankingCategory = 'wealth' | 'longevity';
+export type RankingCategory = 'wealth' | 'longevity' | 'salary';
 
 export interface RankingEntry {
   id: string;
@@ -83,6 +83,10 @@ export class RankingService {
           if (b.wealth !== a.wealth) return b.wealth - a.wealth;
           return b.score - a.score;
         }
+        if (category === 'salary') {
+          if (b.peakSalary !== a.peakSalary) return b.peakSalary - a.peakSalary;
+          return b.score - a.score;
+        }
         if (b.monthsPlayed !== a.monthsPlayed) return b.monthsPlayed - a.monthsPlayed;
         return b.wealth - a.wealth;
       });
@@ -96,7 +100,9 @@ export class RankingService {
     const orderBy =
       category === 'wealth'
         ? [{ wealth: 'desc' as const }, { score: 'desc' as const }]
-        : [{ monthsPlayed: 'desc' as const }, { wealth: 'desc' as const }];
+        : category === 'salary'
+          ? [{ peakSalary: 'desc' as const }, { score: 'desc' as const }]
+          : [{ monthsPlayed: 'desc' as const }, { wealth: 'desc' as const }];
 
     const rows = await prisma.leaderboardEntry.findMany({
       orderBy,
@@ -120,26 +126,31 @@ export class RankingService {
   async getPlayerRanks(gameId: string): Promise<{
     wealth: number | null;
     longevity: number | null;
+    salary: number | null;
   }> {
     if (useMemory || !prisma) {
       const entry = memoryEntries.find((e) => e.gameId === gameId);
-      if (!entry) return { wealth: null, longevity: null };
+      if (!entry) return { wealth: null, longevity: null, salary: null };
 
       const byWealth = [...memoryEntries].sort((a, b) => b.wealth - a.wealth);
       const byLongevity = [...memoryEntries].sort(
         (a, b) => b.monthsPlayed - a.monthsPlayed,
       );
+      const bySalary = [...memoryEntries].sort(
+        (a, b) => b.peakSalary - a.peakSalary,
+      );
 
       return {
         wealth: byWealth.findIndex((e) => e.gameId === gameId) + 1 || null,
         longevity: byLongevity.findIndex((e) => e.gameId === gameId) + 1 || null,
+        salary: bySalary.findIndex((e) => e.gameId === gameId) + 1 || null,
       };
     }
 
     const entry = await prisma.leaderboardEntry.findUnique({
       where: { gameId },
     });
-    if (!entry) return { wealth: null, longevity: null };
+    if (!entry) return { wealth: null, longevity: null, salary: null };
 
     const richer = await prisma.leaderboardEntry.count({
       where: {
@@ -162,9 +173,19 @@ export class RankingService {
       },
     });
 
+    const higherSalary = await prisma.leaderboardEntry.count({
+      where: {
+        OR: [
+          { peakSalary: { gt: entry.peakSalary } },
+          { peakSalary: entry.peakSalary, score: { gt: entry.score } },
+        ],
+      },
+    });
+
     return {
       wealth: richer + 1,
       longevity: longer + 1,
+      salary: higherSalary + 1,
     };
   }
 
