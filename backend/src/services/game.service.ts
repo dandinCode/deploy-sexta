@@ -8,6 +8,7 @@ import {
   SKILL_LABELS,
   listAvailableOptions,
   getMarketForYear,
+  getCompany,
 } from '../engine/index.js';
 import type { GameState } from '../engine/types.js';
 import { gameRepository } from './game.repository.js';
@@ -73,9 +74,13 @@ export class GameService {
     const availableOptions = state.currentEvent
       ? listAvailableOptions(state, state.currentEvent)
       : [];
+    const currentCompany = state.player.companyId
+      ? getCompany(state.player.companyId) ?? null
+      : null;
 
     return {
       ...state,
+      currentCompany,
       currentEvent: state.currentEvent
         ? {
             ...state.currentEvent,
