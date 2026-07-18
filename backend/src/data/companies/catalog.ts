@@ -5,6 +5,13 @@ import type { Company } from '../../engine/types.js';
  */
 export const companies: Company[] = [
   {
+    id: 'primeiro_estagio',
+    name: 'DevHouse (estágio)',
+    type: 'software_house',
+    salaryMultiplier: 1.0,
+    prestige: 20,
+  },
+  {
     id: 'startup_local',
     name: 'Nubug Startup',
     type: 'startup',
