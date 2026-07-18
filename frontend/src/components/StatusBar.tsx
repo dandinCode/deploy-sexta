@@ -1,6 +1,17 @@
 import { formatMoney } from '@/lib/utils';
 import type { GameState } from '@/types/game';
 
+const SENIORITY_SHORT = [
+  'Estágio',
+  'Júnior',
+  'Pleno',
+  'Sênior',
+  'Staff',
+  'Tech Lead',
+  'Principal',
+  'CTO',
+];
+
 interface Props {
   game: GameState;
 }
@@ -20,9 +31,9 @@ export function StatusBar({ game }: Props) {
       <div className="grid grid-cols-2 gap-2 font-mono text-xs">
         <Stat label="Idade" value={`${player.age}`} />
         <Stat label="Data" value={`${career.currentMonth}/${career.currentYear}`} />
-        <Stat label="Salário" value={formatMoney(player.salary)} />
+        <Stat label="Salário/mês" value={formatMoney(player.salary)} />
         <Stat label="Patrimônio" value={formatMoney(player.wealth)} />
-        <Stat label="Caminho" value={player.careerPath} />
+        <Stat label="Nível" value={SENIORITY_SHORT[player.seniority] ?? '—'} />
         <Stat label="Saúde" value={`${player.attributes.mentalHealth}`} />
       </div>
 
