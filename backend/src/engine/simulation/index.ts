@@ -13,9 +13,34 @@ import { selectEvent, getEventById, listAvailableOptions, meetsRequirement } fro
 import { joinCompany, getCompany } from '../companies/index.js';
 import { addProject } from '../projects/index.js';
 import { getSalaryMultiplier } from '../market/index.js';
+import { computeSalary, seniorityLabel, MAX_SENIORITY } from '../seniority/index.js';
 import { personalityCards } from '../../data/cards/catalog.js';
 import { DEFAULT_CONFIG } from './config.js';
 import { calculateScore } from './score.js';
+
+/** Salário mensal derivado de senioridade × empresa × mercado. */
+function resolveSalary(
+  seniority: number,
+  companyId: string | null,
+  year: number,
+): number {
+  const companyMul = companyId
+    ? (getCompany(companyId)?.salaryMultiplier ?? null)
+    : null;
+  return computeSalary(seniority, companyMul, getSalaryMultiplier(year));
+}
+
+/**
+ * Teto salarial: no máximo ~40% acima da faixa do nível/empresa/mercado.
+ * Aumentos por negociação não descolam da realidade — para ganhar mais,
+ * é preciso subir de nível ou trocar de empresa. Freelancer (sem empresa)
+ * não tem teto por faixa.
+ */
+function capSalary(player: GameState['player'], year: number): number {
+  if (!player.companyId) return player.salary;
+  const band = resolveSalary(player.seniority, player.companyId, year);
+  return Math.min(player.salary, Math.round(band * 1.4));
+}
 
 export function createNewGame(
   name: string,
@@ -137,23 +162,31 @@ function applyEffect(
   };
 
   if (effect.wealth) player.wealth += effect.wealth;
-  if (effect.salary) player.salary = Math.max(0, player.salary + effect.salary);
   if (effect.setCareerPath) player.careerPath = effect.setCareerPath;
 
   if (effect.setCompanyId !== undefined) {
     if (effect.setCompanyId === null) {
       player.companyId = null;
+      player.salary = 0;
     } else {
       player = joinCompany(player, effect.setCompanyId);
-      const company = getCompany(effect.setCompanyId);
-      if (company) {
-        const marketMul = getSalaryMultiplier(career.currentYear);
-        player.salary = Math.round(
-          Math.max(player.salary, 3500) * company.salaryMultiplier * (marketMul / 1.0),
-        );
-      }
+      player.companyId = effect.setCompanyId;
+      // Novo emprego: salário derivado do nível atual + empresa + mercado.
+      player.salary = resolveSalary(
+        player.seniority,
+        player.companyId,
+        career.currentYear,
+      );
     }
   }
+
+  // Aumento percentual (negociação, contraproposta).
+  if (effect.raisePct && player.companyId) {
+    player.salary = Math.round(player.salary * (1 + effect.raisePct));
+  }
+
+  // Ajuste absoluto pontual (bônus/corte pequenos definidos em eventos).
+  if (effect.salary) player.salary = Math.max(0, player.salary + effect.salary);
 
   if (effect.addCompanyHistory) {
     if (!player.companyHistory.includes(effect.addCompanyHistory)) {
@@ -171,9 +204,18 @@ function applyEffect(
     }
   }
 
-  if (effect.promote) {
-    player.title = promoteTitle(player.title);
-    player.salary = Math.round(player.salary * 1.25);
+  if (effect.promote && player.seniority < MAX_SENIORITY) {
+    const prevSalary = player.salary;
+    player.seniority += 1;
+    player.monthsInLevel = 0;
+    player.title = seniorityLabel(player.seniority);
+    // Salário do novo nível, garantindo aumento real mínimo de 12%.
+    const leveled = resolveSalary(
+      player.seniority,
+      player.companyId,
+      career.currentYear,
+    );
+    player.salary = Math.max(leveled, Math.round(prevSalary * 1.12));
     player.attributes = applyAttributeDelta(player.attributes, {
       reputation: 5,
       leadership: 3,
@@ -182,12 +224,14 @@ function applyEffect(
 
   if (effect.fire) {
     player.companyId = null;
-    player.salary = Math.round(player.salary * 0.4);
+    player.salary = 0;
     player.attributes = applyAttributeDelta(player.attributes, {
       mentalHealth: -10,
       reputation: -5,
     });
   }
+
+  player.salary = capSalary(player, career.currentYear);
 
   career = addTimelineEntry(career, {
     title: eventTitle,
@@ -226,13 +270,13 @@ function tickMonth(state: GameState, config: SimulationConfig): GameState {
     player = { ...player, age: player.age + 1 };
   }
 
-  // Soft market salary drift
-  const marketMul = getSalaryMultiplier(career.currentYear);
-  if (player.companyId && career.currentMonth === 1) {
-    player = {
-      ...player,
-      salary: Math.round(player.salary * (0.98 + marketMul * 0.02)),
-    };
+  // Reajuste anual: realinha o salário ao nível + empresa + mercado do ano,
+  // mas nunca reduz (protege contra queda de multiplicador de era).
+  if (player.companyId && career.currentMonth === 1 && career.monthsPlayed > 0) {
+    const realigned = resolveSalary(player.seniority, player.companyId, career.currentYear);
+    if (realigned > player.salary) {
+      player = { ...player, salary: realigned };
+    }
   }
 
   career = updatePeakSalary(career, player.salary);
@@ -274,22 +318,6 @@ function finishGame(state: GameState, reason: EndReason): GameState {
     ...finished,
     score: calculateScore(finished),
   };
-}
-
-function promoteTitle(current: string): string {
-  const ladder = [
-    'Júnior em potencial',
-    'Desenvolvedor Júnior',
-    'Desenvolvedor Pleno',
-    'Desenvolvedor Sênior',
-    'Tech Lead',
-    'Staff Engineer',
-    'Principal Engineer',
-    'CTO',
-  ];
-  const idx = ladder.indexOf(current);
-  if (idx === -1 || idx === ladder.length - 1) return current;
-  return ladder[idx + 1]!;
 }
 
 function endReasonLabel(reason: EndReason): string {
