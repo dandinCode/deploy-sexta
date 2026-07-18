@@ -28,6 +28,18 @@ export function meetsRequirement(
     const has = player.companyId !== null;
     if (req.hasCompany !== has) return false;
   }
+  if (req.minSeniority !== undefined && player.seniority < req.minSeniority) {
+    return false;
+  }
+  if (req.maxSeniority !== undefined && player.seniority > req.maxSeniority) {
+    return false;
+  }
+  if (
+    req.minMonthsInLevel !== undefined &&
+    player.monthsInLevel < req.minMonthsInLevel
+  ) {
+    return false;
+  }
   if (req.careerPaths && !req.careerPaths.includes(player.careerPath)) {
     return false;
   }
