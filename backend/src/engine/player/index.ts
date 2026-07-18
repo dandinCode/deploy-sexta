@@ -36,6 +36,7 @@ export function createPlayerFromDraft(
     companyId: companyId ?? null,
     companyHistory: company ? [company.name] : [],
     projects: [],
+    currentProject: null,
     salary,
     wealth: config.startingWealth,
     achievements: [],

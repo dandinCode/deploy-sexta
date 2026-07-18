@@ -4,9 +4,11 @@ export function addProject(
   player: PlayerState,
   projectName: string,
 ): PlayerState {
-  if (player.projects.includes(projectName)) return player;
   return {
     ...player,
-    projects: [...player.projects, projectName],
+    currentProject: projectName,
+    projects: player.projects.includes(projectName)
+      ? player.projects
+      : [...player.projects, projectName],
   };
 }
