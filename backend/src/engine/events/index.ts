@@ -83,13 +83,45 @@ function meetsMinSkills(skills: SkillMap, min: SkillMap): boolean {
   });
 }
 
+/** Quantos meses de histórico guardamos para cooldown. */
+export const EVENT_HISTORY_SIZE = 14;
+/** Meses em que o mesmo evento fica bloqueado se houver alternativa. */
+export const EVENT_HARD_COOLDOWN = 5;
+
 export function filterEligibleEvents(state: GameState): GameEvent[] {
   return gameEvents.filter((event) => meetsRequirement(state, event.requirements));
+}
+
+function recentHistory(state: GameState): string[] {
+  return state.recentEventIds ?? [];
+}
+
+/**
+ * Penalidade por repetição recente.
+ * Quanto mais perto no histórico, menor o peso.
+ * 0 = bloqueado (último turno / muito recente).
+ */
+export function cooldownMultiplier(state: GameState, eventId: string): number {
+  const recent = recentHistory(state);
+  if (recent.length === 0) return 1;
+
+  // Posição a partir do fim: 0 = último evento jogado
+  const fromEnd = [...recent].reverse().indexOf(eventId);
+  if (fromEnd === -1) return 1;
+
+  const monthsAgo = fromEnd + 1;
+  if (monthsAgo <= 1) return 0; // nunca o mesmo no mês seguinte
+  if (monthsAgo <= 3) return 0.02;
+  if (monthsAgo <= 5) return 0.08;
+  if (monthsAgo <= 8) return 0.25;
+  if (monthsAgo <= 12) return 0.5;
+  return 0.75;
 }
 
 export function computeEventWeight(
   state: GameState,
   event: GameEvent,
+  { applyCooldown = true }: { applyCooldown?: boolean } = {},
 ): number {
   const marketMod = getEventWeightModifier(state.career.currentYear, event.id);
   let weight = event.weight * marketMod;
@@ -115,7 +147,11 @@ export function computeEventWeight(
     weight *= 1.5;
   }
 
-  return Math.max(0.01, weight);
+  if (applyCooldown) {
+    weight *= cooldownMultiplier(state, event.id);
+  }
+
+  return Math.max(0, weight);
 }
 
 export function selectEvent(state: GameState, rng: Rng): GameEvent {
@@ -124,12 +160,34 @@ export function selectEvent(state: GameState, rng: Rng): GameEvent {
     return gameEvents.find((e) => e.id === 'quiet_month')!;
   }
 
-  const weighted = eligible.map((event) => ({
+  const recent = recentHistory(state);
+  const hardBlocked = new Set(recent.slice(-EVENT_HARD_COOLDOWN));
+
+  // Prefere pool sem eventos ainda no hard cooldown.
+  let pool = eligible.filter((e) => !hardBlocked.has(e.id));
+  if (pool.length === 0) {
+    pool = eligible;
+  }
+
+  const weighted = pool.map((event) => ({
     ...event,
-    weight: computeEventWeight(state, event),
+    weight: computeEventWeight(state, event, {
+      // No fallback extremo (só eventos bloqueados), ainda aplica soft cooldown.
+      applyCooldown: true,
+    }),
   }));
 
-  return rng.weightedPick(weighted);
+  const withWeight = weighted.filter((e) => e.weight > 0);
+  if (withWeight.length > 0) {
+    return rng.weightedPick(withWeight);
+  }
+
+  // Último recurso: algo elegível sem cooldown (ex.: pouquíssimos eventos possíveis).
+  const fallback = eligible.map((event) => ({
+    ...event,
+    weight: computeEventWeight(state, event, { applyCooldown: false }),
+  }));
+  return rng.weightedPick(fallback);
 }
 
 export function getEventById(id: string): GameEvent | undefined {
