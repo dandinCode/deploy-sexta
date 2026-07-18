@@ -4,6 +4,9 @@ import {
   applySkillDelta,
   createBaseAttributes,
 } from './attributes.js';
+import { computeSalary, seniorityLabel } from '../seniority/index.js';
+import { getCompany } from '../companies/index.js';
+import { getSalaryMultiplier } from '../market/index.js';
 
 export function createPlayerFromDraft(
   name: string,
@@ -18,6 +21,11 @@ export function createPlayerFromDraft(
     skills = applySkillDelta(skills, card.skillBonuses);
   }
 
+  const companyId = config.startCompanyId;
+  const companyMul = companyId ? (getCompany(companyId)?.salaryMultiplier ?? null) : null;
+  const salary = computeSalary(0, companyMul, getSalaryMultiplier(config.startYear));
+  const company = companyId ? getCompany(companyId) : undefined;
+
   return {
     name,
     age: config.startAge,
@@ -25,32 +33,42 @@ export function createPlayerFromDraft(
     skills,
     selectedCards: cards.map((c) => c.id),
     careerPath: 'clt',
-    companyId: null,
-    companyHistory: [],
+    companyId: companyId ?? null,
+    companyHistory: company ? [company.name] : [],
     projects: [],
-    salary: config.baseSalary,
+    salary,
     wealth: config.startingWealth,
     achievements: [],
-    title: 'Júnior em potencial',
+    title: seniorityLabel(0),
+    seniority: 0,
+    monthsInLevel: 0,
   };
 }
 
+/**
+ * Ganho mensal de patrimônio: poupança líquida após custo de vida.
+ * Estagiário quase não sobra; a taxa de poupança melhora com a senioridade.
+ */
 export function monthlyPassiveTick(player: PlayerState): PlayerState {
-  const wealthGain = Math.round(player.salary / 12);
-  const burnoutRisk =
-    player.attributes.discipline < 30 || player.attributes.mentalHealth < 40
-      ? -2
-      : 0;
+  const costOfLiving = 1200 + player.seniority * 500;
+  const savingsRate = 0.35;
+  const wealthGain = Math.round((player.salary - costOfLiving) * savingsRate);
+
+  // Saúde mental tende a um equilíbrio: piora em crise, recupera quando saudável.
+  const mh = player.attributes.mentalHealth;
+  let mhDelta = 0;
+  if (mh < 35) mhDelta = -2;
+  else if (mh >= 55) mhDelta = 2;
+  else mhDelta = 1;
+  if (player.attributes.discipline < 25) mhDelta -= 1;
 
   return {
     ...player,
     wealth: player.wealth + wealthGain,
+    monthsInLevel: player.monthsInLevel + 1,
     attributes: {
       ...player.attributes,
-      mentalHealth: Math.max(
-        0,
-        Math.min(100, player.attributes.mentalHealth + burnoutRisk),
-      ),
+      mentalHealth: Math.max(0, Math.min(100, mh + mhDelta)),
     },
   };
 }
