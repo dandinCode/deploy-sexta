@@ -160,13 +160,12 @@ export interface PlayerState {
   companyId: string | null;
   companyHistory: string[];
   projects: string[];
+  currentProject: string | null;
   salary: number;
   wealth: number;
   achievements: string[];
   title: string;
-  /** Índice na escada de senioridade (0 = Estágio). */
   seniority: number;
-  /** Meses acumulados no nível de senioridade atual. */
   monthsInLevel: number;
 }
 
@@ -205,6 +204,5 @@ export interface SimulationConfig {
   retirementAge: number;
   draft: DraftConfig;
   startingWealth: number;
-  /** Empresa inicial (primeiro estágio). Null = começa desempregado. */
   startCompanyId: string | null;
 }
