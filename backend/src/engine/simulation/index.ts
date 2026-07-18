@@ -9,7 +9,7 @@ import { createCareer, advanceMonth, addTimelineEntry, markCareerEnd, updatePeak
 import { createPlayerFromDraft, monthlyPassiveTick } from '../player/index.js';
 import { applyAttributeDelta, applySkillDelta } from '../player/attributes.js';
 import { createRng } from '../random/index.js';
-import { selectEvent, getEventById, listAvailableOptions, meetsRequirement } from '../events/index.js';
+import { selectEvent, getEventById, listAvailableOptions, meetsRequirement, EVENT_HISTORY_SIZE } from '../events/index.js';
 import { joinCompany, getCompany } from '../companies/index.js';
 import { addProject } from '../projects/index.js';
 import { getSalaryMultiplier } from '../market/index.js';
@@ -61,6 +61,7 @@ export function createNewGame(
     currentEvent: null,
     score: null,
     rngCursor: 0,
+    recentEventIds: [],
   };
 }
 
@@ -99,10 +100,14 @@ export function beginMonth(state: GameState): GameState {
 
   const rng = createRng(state.seed + state.career.monthsPlayed * 9973);
   const event = selectEvent(state, rng);
+  const recent = [...(state.recentEventIds ?? []), event.id].slice(
+    -EVENT_HISTORY_SIZE,
+  );
 
   return {
     ...state,
     currentEvent: event,
+    recentEventIds: recent,
     rngCursor: state.rngCursor + 1,
   };
 }
