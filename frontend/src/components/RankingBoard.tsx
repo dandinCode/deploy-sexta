@@ -22,7 +22,7 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
     setError(null);
 
     void api
-      .getRanking(by, compact ? 10 : 20)
+      .getRanking(by, 10)
       .then((res) => {
         if (!cancelled) setEntries(res.entries);
       })
@@ -50,7 +50,7 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
       <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="font-mono text-xs tracking-widest text-[var(--accent)]">
-            RANKING MUNDIAL
+            TOP 10 MUNDIAL
           </div>
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold">
             Hall da fama
