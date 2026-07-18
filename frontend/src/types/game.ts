@@ -60,6 +60,8 @@ export interface PlayerState {
   wealth: number;
   achievements: string[];
   title: string;
+  seniority: number;
+  monthsInLevel: number;
 }
 
 export interface CareerState {
