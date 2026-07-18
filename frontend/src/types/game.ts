@@ -56,6 +56,7 @@ export interface PlayerState {
   companyId: string | null;
   companyHistory: string[];
   projects: string[];
+  currentProject?: string | null;
   salary: number;
   wealth: number;
   achievements: string[];
@@ -84,6 +85,14 @@ export interface MarketEra {
   salaryMultiplier: number;
 }
 
+export interface CurrentCompany {
+  id: string;
+  name: string;
+  type: string;
+  salaryMultiplier: number;
+  prestige: number;
+}
+
 export interface GameState {
   id: string;
   seed: number;
@@ -95,6 +104,7 @@ export interface GameState {
   currentEvent: GameEvent | null;
   score: number | null;
   market?: MarketEra;
+  currentCompany?: CurrentCompany | null;
 }
 
 export interface MetaResponse {
