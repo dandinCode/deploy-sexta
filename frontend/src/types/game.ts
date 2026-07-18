@@ -105,7 +105,7 @@ export interface MetaResponse {
   };
 }
 
-export type RankingCategory = 'wealth' | 'longevity';
+export type RankingCategory = 'wealth' | 'longevity' | 'salary';
 
 export interface RankingEntry {
   id: string;
@@ -128,6 +128,7 @@ export interface RankingResponse {
 export interface PlayerRanks {
   wealth: number | null;
   longevity: number | null;
+  salary: number | null;
 }
 
 export interface GameStateWithRanking extends GameState {

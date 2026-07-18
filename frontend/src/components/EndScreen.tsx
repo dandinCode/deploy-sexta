@@ -41,7 +41,8 @@ export function EndScreen({ game, ranks, onRestart }: Props) {
           <span className="text-[var(--accent)]">{score ?? 0}</span>
         </p>
 
-        {localRanks && (localRanks.wealth || localRanks.longevity) && (
+        {localRanks &&
+          (localRanks.wealth || localRanks.longevity || localRanks.salary) && (
           <div className="mb-6 border border-[var(--accent)]/40 bg-[var(--accent-dim)] p-3 font-mono text-sm">
             <div className="mb-1 text-xs text-[var(--accent)]">SUA POSIÇÃO MUNDIAL</div>
             {localRanks.wealth != null && (
@@ -49,6 +50,9 @@ export function EndScreen({ game, ranks, onRestart }: Props) {
             )}
             {localRanks.longevity != null && (
               <div>#{localRanks.longevity} em longevidade</div>
+            )}
+            {localRanks.salary != null && (
+              <div>#{localRanks.salary} em maior salário</div>
             )}
           </div>
         )}

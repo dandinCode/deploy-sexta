@@ -56,7 +56,7 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
             Hall da fama
           </h2>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             size="sm"
             variant={by === 'wealth' ? 'default' : 'outline'}
@@ -70,6 +70,13 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
             onClick={() => setBy('longevity')}
           >
             Longevidade
+          </Button>
+          <Button
+            size="sm"
+            variant={by === 'salary' ? 'default' : 'outline'}
+            onClick={() => setBy('salary')}
+          >
+            Maior salário
           </Button>
         </div>
       </div>
@@ -95,10 +102,14 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
                 <th className="pb-2 pr-3 font-normal">#</th>
                 <th className="pb-2 pr-3 font-normal">Dev</th>
                 <th className="pb-2 pr-3 font-normal">
-                  {by === 'wealth' ? 'Patrimônio' : 'Carreira'}
+                  {by === 'wealth'
+                    ? 'Patrimônio'
+                    : by === 'salary'
+                      ? 'Maior salário'
+                      : 'Carreira'}
                 </th>
                 <th className="pb-2 pr-3 font-normal">
-                  {by === 'wealth' ? 'Duração' : 'Patrimônio'}
+                  {by === 'longevity' ? 'Patrimônio' : 'Duração'}
                 </th>
                 <th className="pb-2 font-normal">Score</th>
               </tr>
@@ -121,12 +132,14 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
                     <td className="py-2.5 pr-3">
                       {by === 'wealth'
                         ? formatMoney(entry.wealth)
-                        : formatCareerLength(entry.monthsPlayed)}
+                        : by === 'salary'
+                          ? formatMoney(entry.peakSalary)
+                          : formatCareerLength(entry.monthsPlayed)}
                     </td>
                     <td className="py-2.5 pr-3 text-[var(--muted)]">
-                      {by === 'wealth'
-                        ? formatCareerLength(entry.monthsPlayed)
-                        : formatMoney(entry.wealth)}
+                      {by === 'longevity'
+                        ? formatMoney(entry.wealth)
+                        : formatCareerLength(entry.monthsPlayed)}
                     </td>
                     <td className="py-2.5">{entry.score}</td>
                   </tr>
