@@ -9,4 +9,5 @@ export * from './player/index.js';
 export * from './player/attributes.js';
 export * from './career/index.js';
 export * from './skills/index.js';
+export * from './seniority/index.js';
 export * from './random/index.js';
