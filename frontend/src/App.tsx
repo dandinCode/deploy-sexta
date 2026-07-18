@@ -6,6 +6,7 @@ import { EventPanel } from '@/components/EventPanel';
 import { EndScreen } from '@/components/EndScreen';
 import { RankingBoard } from '@/components/RankingBoard';
 import { useGameStore } from '@/store/gameStore';
+import { Github } from 'lucide-react';
 
 export default function App() {
   const {
@@ -33,7 +34,7 @@ export default function App() {
 
   if (!game) {
     return (
-      <div className="relative min-h-screen overflow-hidden">
+      <div className="relative min-h-screen overflow-x-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--accent-dim),_transparent_55%),linear-gradient(180deg,_#0b1210_0%,_#07100e_50%,_#050a09_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:48px_48px]" />
 
@@ -80,6 +81,17 @@ export default function App() {
             <RankingBoard compact className="animate-fade-in" />
           </div>
         </main>
+        <footer className="relative z-10 border-t border-[var(--border)] px-6 py-5 text-center">
+          <a
+            href="https://github.com/dandinCode/deploy-sexta"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 font-mono text-xs text-[var(--muted)] transition-colors hover:text-[var(--accent)]"
+          >
+            <Github size={16} aria-hidden="true" />
+            Código aberto no GitHub
+          </a>
+        </footer>
       </div>
     );
   }
