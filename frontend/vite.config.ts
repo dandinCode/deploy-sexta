@@ -13,5 +13,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    // Em container (Windows/Docker) o fs events não propaga; polling garante HMR.
+    watch: process.env.CHOKIDAR_USEPOLLING
+      ? { usePolling: true, interval: 300 }
+      : undefined,
   },
 });

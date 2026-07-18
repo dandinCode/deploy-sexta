@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:docker": "nodemon --legacy-watch --watch src --ext ts,json --exec \"tsx src/index.ts\"",
     "build": "tsc",
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
+    "nodemon": "^3.1.9",
     "prisma": "^6.5.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"

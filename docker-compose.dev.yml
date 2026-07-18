@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: deploy
+      POSTGRES_PASSWORD: sexta
+      POSTGRES_DB: deploy_sexta
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deploy -d deploy_sexta"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      target: dev
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgresql://deploy:sexta@db:5432/deploy_sexta?schema=public
+      PORT: 3001
+      HOST: 0.0.0.0
+      CHOKIDAR_USEPOLLING: "true"
+    # Código-fonte montado; node_modules e prisma client ficam do container (imagem).
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - /app/node_modules/.prisma
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:3001/api
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
+    name: deploysexta_pgdata
+    external: true

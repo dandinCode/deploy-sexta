@@ -3,6 +3,19 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm install
 
+# --- Ambiente de desenvolvimento (hot reload com tsx watch) ---
+FROM node:22-alpine AS dev
+WORKDIR /app
+ENV NODE_ENV=development
+# Polling: necessário para detectar mudanças em volumes montados no Windows/Docker.
+ENV CHOKIDAR_USEPOLLING=true
+COPY package.json package-lock.json* ./
+RUN npm install
+COPY prisma ./prisma
+RUN npx prisma generate
+EXPOSE 3001
+CMD ["sh", "-c", "npx prisma db push && npm run dev:docker"]
+
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
