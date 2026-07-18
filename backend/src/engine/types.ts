@@ -191,6 +191,7 @@ export interface GameState {
   currentEvent: GameEvent | null;
   score: number | null;
   rngCursor: number;
+  recentEventIds: string[];
 }
 
 export interface DraftConfig {
