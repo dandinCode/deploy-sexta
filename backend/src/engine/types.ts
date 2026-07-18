@@ -77,6 +77,9 @@ export interface Requirement {
   maxWealth?: number;
   minSalary?: number;
   hasCompany?: boolean;
+  minSeniority?: number;
+  maxSeniority?: number;
+  minMonthsInLevel?: number;
   tags?: string[];
 }
 
@@ -85,6 +88,8 @@ export interface Effect {
   skills?: SkillMap;
   wealth?: number;
   salary?: number;
+  /** Aumento percentual sobre o salário atual (ex: 0.15 = +15%). */
+  raisePct?: number;
   reputation?: number;
   mentalHealth?: number;
   setCareerPath?: CareerPath;
@@ -159,6 +164,10 @@ export interface PlayerState {
   wealth: number;
   achievements: string[];
   title: string;
+  /** Índice na escada de senioridade (0 = Estágio). */
+  seniority: number;
+  /** Meses acumulados no nível de senioridade atual. */
+  monthsInLevel: number;
 }
 
 export interface CareerState {
@@ -194,6 +203,7 @@ export interface SimulationConfig {
   startAge: number;
   retirementAge: number;
   draft: DraftConfig;
-  baseSalary: number;
   startingWealth: number;
+  /** Empresa inicial (primeiro estágio). Null = começa desempregado. */
+  startCompanyId: string | null;
 }
