@@ -39,4 +39,5 @@ model LeaderboardEntry {
 
   @@index([wealth(sort: Desc)])
   @@index([monthsPlayed(sort: Desc)])
+  @@index([peakSalary(sort: Desc)])
 }
