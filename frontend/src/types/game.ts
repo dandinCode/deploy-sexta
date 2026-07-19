@@ -51,6 +51,7 @@ export interface PlayerState {
   age: number;
   attributes: Record<AttributeId, number>;
   skills: Record<string, number>;
+  technologiesUsed?: string[];
   selectedCards: string[];
   careerPath: string;
   companyId: string | null;
