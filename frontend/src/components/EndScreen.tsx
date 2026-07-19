@@ -7,6 +7,7 @@ import type { GameState, PlayerRanks } from '@/types/game';
 interface Props {
   game: GameState;
   ranks?: PlayerRanks | null;
+  skillLabels?: Record<string, string>;
   onRestart: () => void;
 }
 
@@ -19,9 +20,10 @@ const END_LABELS: Record<string, string> = {
   death: 'Fim inesperado',
 };
 
-export function EndScreen({ game, ranks, onRestart }: Props) {
+export function EndScreen({ game, ranks, skillLabels = {}, onRestart }: Props) {
   const { player, career, score } = game;
   const recent = [...career.timeline].slice(-12).reverse();
+  const technologies = player.technologiesUsed ?? [];
   const [showRanking, setShowRanking] = useState(true);
   const [localRanks, setLocalRanks] = useState(ranks);
 
@@ -62,7 +64,26 @@ export function EndScreen({ game, ranks, onRestart }: Props) {
           <Metric label="Patrimônio" value={formatMoney(player.wealth)} />
           <Metric label="Empresas" value={`${player.companyHistory.length}`} />
           <Metric label="Projetos" value={`${player.projects.length}`} />
+          <Metric label="Tecnologias" value={`${technologies.length}`} />
         </div>
+
+        {technologies.length > 0 && (
+          <div className="mb-8">
+            <div className="mb-2 font-mono text-xs text-[var(--accent)]">
+              TECNOLOGIAS DA CARREIRA
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {technologies.map((technology) => (
+                <span
+                  key={technology}
+                  className="border border-[var(--border)] bg-[var(--bg)] px-2 py-1 font-mono text-xs"
+                >
+                  {skillLabels[technology] ?? technology}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {player.achievements.length > 0 && (
           <div className="mb-8">
