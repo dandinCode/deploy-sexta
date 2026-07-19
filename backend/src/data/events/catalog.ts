@@ -536,6 +536,7 @@ export const gameEvents: GameEvent[] = [
     weight: 10,
     requirements: { minYear: 2023 },
     tags: ['ai', 'market'],
+    cooldownGroup: 'ai_market',
     options: [
       {
         id: 'adopt_fast',
@@ -572,10 +573,12 @@ export const gameEvents: GameEvent[] = [
   },
   {
     id: 'new_lang_hype',
-    title: 'Nova linguagem virou tendência',
-    description: 'Todo mundo no Twitter jura que essa é A linguagem.',
-    weight: 9,
-    tags: ['tech', 'learning'],
+    title: 'Linguagens de sistemas em alta',
+    description: 'Go e Rust ganharam espaço em serviços de alta performance.',
+    weight: 5,
+    requirements: { minYear: 2018 },
+    tags: ['tech', 'learning', 'language'],
+    cooldownGroup: 'technology_trend',
     options: [
       {
         id: 'learn_rust',
@@ -598,6 +601,230 @@ export const gameEvents: GameEvent[] = [
         label: 'Ignorar o hype',
         effects: {
           attributes: { discipline: 3, reputation: -2 },
+        },
+      },
+    ],
+  },
+  {
+    id: 'typescript_adoption',
+    title: 'TypeScript virou padrão no time',
+    description: 'A base JavaScript cresceu e os bugs de tipagem começaram a cobrar a conta.',
+    weight: 7,
+    requirements: { minYear: 2018, hasCompany: true },
+    tags: ['tech', 'learning', 'language'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'migrate_typescript',
+        label: 'Liderar a migração para TypeScript',
+        effects: {
+          skills: { typescript: 10, javascript: 4 },
+          attributes: { architecture: 4, discipline: 3 },
+          addProject: 'Migração para TypeScript',
+        },
+      },
+      {
+        id: 'nestjs_backend',
+        label: 'Adotar Node.js com NestJS',
+        effects: {
+          skills: { typescript: 7, node: 6, nestjs: 8 },
+          attributes: { backend: 5, architecture: 3 },
+          addProject: 'API em NestJS',
+        },
+      },
+      {
+        id: 'keep_javascript',
+        label: 'Manter JavaScript com testes melhores',
+        effects: {
+          skills: { javascript: 7 },
+          attributes: { discipline: 4 },
+        },
+      },
+    ],
+  },
+  {
+    id: 'frontend_framework_choice',
+    title: 'Escolha do framework frontend',
+    description: 'Um produto novo precisa de uma stack que o time consiga sustentar.',
+    weight: 6,
+    requirements: { maxYear: 2023, hasCompany: true },
+    tags: ['tech', 'learning', 'frontend'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'choose_angular',
+        label: 'Angular para uma aplicação corporativa',
+        effects: {
+          skills: { typescript: 4, angular: 9 },
+          attributes: { frontend: 5, architecture: 3 },
+          addProject: 'Portal corporativo Angular',
+        },
+      },
+      {
+        id: 'choose_vue',
+        label: 'Vue.js pela curva de aprendizado',
+        effects: {
+          skills: { javascript: 4, vue: 9 },
+          attributes: { frontend: 5, creativity: 2 },
+          addProject: 'Produto em Vue.js',
+        },
+      },
+      {
+        id: 'choose_react',
+        label: 'React pelo ecossistema',
+        effects: {
+          skills: { javascript: 4, react: 9 },
+          attributes: { frontend: 5 },
+          addProject: 'Frontend React',
+        },
+      },
+    ],
+  },
+  {
+    id: 'enterprise_backend_stack',
+    title: 'Projeto enterprise de longo prazo',
+    description: 'O contrato exige uma stack madura, suporte e gente disponível no mercado.',
+    weight: 6,
+    requirements: { hasCompany: true },
+    tags: ['tech', 'learning', 'backend'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'java_spring',
+        label: 'Java com Spring Boot',
+        effects: {
+          skills: { java: 9, spring: 9, sql: 3 },
+          attributes: { backend: 5, architecture: 3 },
+          addProject: 'Plataforma Spring Boot',
+        },
+      },
+      {
+        id: 'csharp_dotnet',
+        label: 'C# com .NET',
+        effects: {
+          skills: { csharp: 9, dotnet: 9, sql: 3 },
+          attributes: { backend: 5, discipline: 2 },
+          addProject: 'Sistema em .NET',
+        },
+      },
+      {
+        id: 'php_laravel',
+        label: 'PHP com Laravel',
+        effects: {
+          skills: { php: 9, laravel: 9, sql: 3 },
+          attributes: { backend: 4, creativity: 2 },
+          addProject: 'Produto Laravel',
+        },
+      },
+    ],
+  },
+  {
+    id: 'python_product',
+    title: 'Produto novo no ecossistema Python',
+    description: 'O time quer entregar rápido sem abrir mão de uma base conhecida.',
+    weight: 5,
+    requirements: { minYear: 2019, hasCompany: true },
+    tags: ['tech', 'learning', 'backend'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'python_django',
+        label: 'Construir com Python e Django',
+        effects: {
+          skills: { python: 9, django: 9, postgres: 3 },
+          attributes: { backend: 5, discipline: 2 },
+          addProject: 'Produto Django',
+        },
+      },
+      {
+        id: 'ruby_rails',
+        label: 'Apostar em Ruby on Rails',
+        effects: {
+          skills: { ruby: 9, rails: 9, postgres: 3 },
+          attributes: { backend: 4, creativity: 3 },
+          addProject: 'SaaS em Rails',
+        },
+      },
+      {
+        id: 'use_known_stack',
+        label: 'Continuar na stack que o time já domina',
+        effects: {
+          attributes: { discipline: 3, architecture: 2 },
+        },
+      },
+    ],
+  },
+  {
+    id: 'mobile_stack',
+    title: 'Aplicativo mobile entrou no roadmap',
+    description: 'Produto quer presença nativa nas lojas ainda neste semestre.',
+    weight: 5,
+    requirements: { hasCompany: true },
+    tags: ['tech', 'learning', 'mobile'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'android_kotlin',
+        label: 'Android nativo com Kotlin',
+        effects: {
+          skills: { kotlin: 10 },
+          attributes: { frontend: 4, logic: 3 },
+          addProject: 'Aplicativo Android',
+        },
+      },
+      {
+        id: 'ios_swift',
+        label: 'iOS nativo com Swift',
+        effects: {
+          skills: { swift: 10 },
+          attributes: { frontend: 4, creativity: 3 },
+          addProject: 'Aplicativo iOS',
+        },
+      },
+      {
+        id: 'cross_flutter',
+        label: 'Um app multiplataforma com Flutter',
+        effects: {
+          skills: { flutter: 10 },
+          attributes: { frontend: 5 },
+          addProject: 'Aplicativo Flutter',
+        },
+      },
+    ],
+  },
+  {
+    id: 'cobol_legacy',
+    title: 'O mainframe ainda paga as contas',
+    description: 'Um sistema COBOL crítico precisa de alguém disposto a entendê-lo.',
+    weight: 1.2,
+    requirements: { hasCompany: true, minSeniority: 1 },
+    tags: ['tech', 'learning', 'legacy', 'rare'],
+    cooldownGroup: 'technology_trend',
+    options: [
+      {
+        id: 'learn_cobol',
+        label: 'Aprender COBOL e encarar o legado',
+        effects: {
+          skills: { cobol: 12, sql: 3 },
+          attributes: { logic: 4, discipline: 5, mentalHealth: -3 },
+          raisePct: 0.08,
+          addProject: 'Modernização de mainframe',
+          addAchievement: 'Arqueólogo de Software',
+        },
+      },
+      {
+        id: 'document_legacy',
+        label: 'Mapear o legado sem virar especialista',
+        effects: {
+          attributes: { architecture: 4, discipline: 3 },
+          addProject: 'Documentação do legado',
+        },
+      },
+      {
+        id: 'avoid_mainframe',
+        label: 'Recusar educadamente',
+        effects: {
+          attributes: { mentalHealth: 2 },
         },
       },
     ],
@@ -950,6 +1177,7 @@ export const gameEvents: GameEvent[] = [
     weight: 8,
     requirements: { maxYear: 2021 },
     tags: ['market', 'tech'],
+    cooldownGroup: 'technology_trend',
     options: [
       {
         id: 'deep_react',
@@ -1005,6 +1233,7 @@ export const gameEvents: GameEvent[] = [
     weight: 7,
     requirements: { minYear: 2023, hasCompany: true },
     tags: ['ai', 'market'],
+    cooldownGroup: 'ai_market',
     options: [
       {
         id: 'ai_champion',

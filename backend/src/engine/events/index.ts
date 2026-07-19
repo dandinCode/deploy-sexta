@@ -87,6 +87,8 @@ function meetsMinSkills(skills: SkillMap, min: SkillMap): boolean {
 export const EVENT_HISTORY_SIZE = 14;
 /** Meses em que o mesmo evento fica bloqueado se houver alternativa. */
 export const EVENT_HARD_COOLDOWN = 5;
+/** Meses de intervalo entre eventos diferentes sobre o mesmo tema. */
+export const EVENT_GROUP_HARD_COOLDOWN = 8;
 
 export function filterEligibleEvents(state: GameState): GameEvent[] {
   return gameEvents.filter((event) => meetsRequirement(state, event.requirements));
@@ -116,6 +118,29 @@ export function cooldownMultiplier(state: GameState, eventId: string): number {
   if (monthsAgo <= 8) return 0.25;
   if (monthsAgo <= 12) return 0.5;
   return 0.75;
+}
+
+/**
+ * Cooldown compartilhado por tema. Ex.: React em alta e hype de uma nova
+ * linguagem pertencem a `technology_trend`, então não aparecem em sequência.
+ */
+export function groupCooldownMultiplier(
+  state: GameState,
+  event: GameEvent,
+): number {
+  if (!event.cooldownGroup) return 1;
+
+  const recent = [...recentHistory(state)].reverse();
+  const fromEnd = recent.findIndex(
+    (id) => getEventById(id)?.cooldownGroup === event.cooldownGroup,
+  );
+  if (fromEnd === -1) return 1;
+
+  const monthsAgo = fromEnd + 1;
+  if (monthsAgo <= EVENT_GROUP_HARD_COOLDOWN) return 0;
+  if (monthsAgo <= 11) return 0.15;
+  if (monthsAgo <= EVENT_HISTORY_SIZE) return 0.4;
+  return 1;
 }
 
 export function computeEventWeight(
@@ -149,6 +174,7 @@ export function computeEventWeight(
 
   if (applyCooldown) {
     weight *= cooldownMultiplier(state, event.id);
+    weight *= groupCooldownMultiplier(state, event);
   }
 
   return Math.max(0, weight);
@@ -162,9 +188,23 @@ export function selectEvent(state: GameState, rng: Rng): GameEvent {
 
   const recent = recentHistory(state);
   const hardBlocked = new Set(recent.slice(-EVENT_HARD_COOLDOWN));
+  const blockedGroups = new Set(
+    recent
+      .slice(-EVENT_GROUP_HARD_COOLDOWN)
+      .map((id) => getEventById(id)?.cooldownGroup)
+      .filter((group): group is string => Boolean(group)),
+  );
 
-  // Prefere pool sem eventos ainda no hard cooldown.
-  let pool = eligible.filter((e) => !hardBlocked.has(e.id));
+  // Prefere eventos fora do cooldown individual e temático.
+  let pool = eligible.filter(
+    (event) =>
+      !hardBlocked.has(event.id) &&
+      (!event.cooldownGroup || !blockedGroups.has(event.cooldownGroup)),
+  );
+  // Se todos os temas estiverem bloqueados, preserva ao menos o cooldown exato.
+  if (pool.length === 0) {
+    pool = eligible.filter((event) => !hardBlocked.has(event.id));
+  }
   if (pool.length === 0) {
     pool = eligible;
   }
