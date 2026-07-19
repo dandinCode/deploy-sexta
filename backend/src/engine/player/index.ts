@@ -31,6 +31,7 @@ export function createPlayerFromDraft(
     age: config.startAge,
     attributes,
     skills,
+    technologiesUsed: [],
     selectedCards: cards.map((c) => c.id),
     careerPath: 'clt',
     companyId: companyId ?? null,
