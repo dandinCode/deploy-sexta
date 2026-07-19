@@ -4,6 +4,7 @@ import type {
   GameState,
   PersonalityCard,
   SimulationConfig,
+  SkillId,
 } from '../types.js';
 import { createCareer, advanceMonth, addTimelineEntry, markCareerEnd, updatePeakSalary } from '../career/index.js';
 import { createPlayerFromDraft, monthlyPassiveTick } from '../player/index.js';
@@ -159,11 +160,17 @@ function applyEffect(
 ): GameState {
   let player = { ...state.player };
   let career = { ...state.career };
+  const usedInChoice = Object.entries(effect.skills ?? {})
+    .filter(([, delta]) => (delta ?? 0) > 0)
+    .map(([id]) => id as SkillId);
 
   player = {
     ...player,
     attributes: applyAttributeDelta(player.attributes, effect.attributes),
     skills: applySkillDelta(player.skills, effect.skills),
+    technologiesUsed: [
+      ...new Set([...(player.technologiesUsed ?? []), ...usedInChoice]),
+    ],
   };
 
   if (effect.wealth) player.wealth += effect.wealth;
