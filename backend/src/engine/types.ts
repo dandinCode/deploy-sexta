@@ -18,12 +18,28 @@ export type AttributeId =
   | 'reputation';
 
 export type SkillId =
+  | 'javascript'
+  | 'typescript'
   | 'react'
+  | 'angular'
+  | 'vue'
   | 'node'
+  | 'nestjs'
   | 'java'
+  | 'spring'
+  | 'csharp'
+  | 'dotnet'
+  | 'php'
+  | 'laravel'
+  | 'ruby'
+  | 'rails'
   | 'python'
+  | 'django'
   | 'go'
   | 'rust'
+  | 'kotlin'
+  | 'swift'
+  | 'cobol'
   | 'docker'
   | 'aws'
   | 'kubernetes'
@@ -119,6 +135,8 @@ export interface GameEvent {
   requirements?: Requirement;
   options: EventOption[];
   tags?: string[];
+  /** Eventos do mesmo tema compartilham cooldown para não aparecerem próximos. */
+  cooldownGroup?: string;
 }
 
 export interface Company {
@@ -155,6 +173,8 @@ export interface PlayerState {
   age: number;
   attributes: AttributeMap;
   skills: SkillMap;
+  /** Tecnologias efetivamente aprendidas/usadas durante esta carreira. */
+  technologiesUsed: SkillId[];
   selectedCards: string[];
   careerPath: CareerPath;
   companyId: string | null;
