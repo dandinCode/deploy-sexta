@@ -14,12 +14,15 @@ const SENIORITY_SHORT = [
 
 interface Props {
   game: GameState;
+  skillLabels?: Record<string, string>;
 }
 
-export function StatusBar({ game }: Props) {
+export function StatusBar({ game, skillLabels = {} }: Props) {
   const { player, career, market, currentCompany } = game;
   const currentProject =
     player.currentProject ?? player.projects[player.projects.length - 1] ?? null;
+  const technologies = player.technologiesUsed ?? [];
+  const recentTechnologies = technologies.slice(-6);
 
   return (
     <aside className="flex flex-col gap-4 border border-[var(--border)] bg-[var(--panel)] p-4">
@@ -54,6 +57,29 @@ export function StatusBar({ game }: Props) {
           />
         </div>
       </div>
+
+      {recentTechnologies.length > 0 && (
+        <div className="border-t border-[var(--border)] pt-3">
+          <div className="mb-2 font-mono text-xs text-[var(--accent)]">
+            TECNOLOGIAS
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {recentTechnologies.map((technology) => (
+              <span
+                key={technology}
+                className="border border-[var(--border)] px-1.5 py-0.5 font-mono text-[10px]"
+              >
+                {skillLabels[technology] ?? technology}
+              </span>
+            ))}
+            {technologies.length > recentTechnologies.length && (
+              <span className="px-1 py-0.5 font-mono text-[10px] text-[var(--muted)]">
+                +{technologies.length - recentTechnologies.length}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {market && (
         <div className="border-t border-[var(--border)] pt-3">
