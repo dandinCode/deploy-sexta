@@ -144,7 +144,12 @@ export default function App() {
   if (game.status === 'finished') {
     return (
       <div className="min-h-screen bg-[var(--bg)] px-4 py-10 md:px-8">
-        <EndScreen game={game} ranks={playerRanks} onRestart={reset} />
+        <EndScreen
+          game={game}
+          ranks={playerRanks}
+          skillLabels={meta?.skills}
+          onRestart={reset}
+        />
       </div>
     );
   }
@@ -166,7 +171,7 @@ export default function App() {
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[280px_1fr]">
-        <StatusBar game={game} />
+        <StatusBar game={game} skillLabels={meta?.skills} />
         {game.currentEvent ? (
           <EventPanel
             event={game.currentEvent}
