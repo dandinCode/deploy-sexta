@@ -24,10 +24,20 @@ export interface PersonalityCard {
   skillBonuses?: Record<string, number>;
 }
 
+export interface OfferedCompany {
+  id: string;
+  name: string;
+  type: string;
+  prestige: number;
+  salaryMultiplier: number;
+}
+
 export interface EventOption {
   id: string;
   label: string;
   description?: string;
+  offeredCompany?: OfferedCompany;
+  projectedSalary?: number;
 }
 
 export interface GameEvent {
