@@ -9,8 +9,11 @@ import {
   listAvailableOptions,
   getMarketForYear,
   getCompany,
+  getSalaryMultiplier,
+  computeSalary,
+  MAX_SENIORITY,
 } from '../engine/index.js';
-import type { GameState } from '../engine/types.js';
+import type { EventOption, GameState } from '../engine/types.js';
 import { gameRepository } from './game.repository.js';
 import { rankingService, type RankingCategory } from './ranking.service.js';
 
@@ -72,7 +75,9 @@ export class GameService {
 
   private toPublic(state: GameState) {
     const availableOptions = state.currentEvent
-      ? listAvailableOptions(state, state.currentEvent)
+      ? listAvailableOptions(state, state.currentEvent).map((opt) =>
+          this.enrichOption(state, opt),
+        )
       : [];
     const currentCompany = state.player.companyId
       ? getCompany(state.player.companyId) ?? null
@@ -88,6 +93,37 @@ export class GameService {
           }
         : null,
       market: getMarketForYear(state.career.currentYear),
+    };
+  }
+
+  private enrichOption(state: GameState, opt: EventOption) {
+    const companyId = opt.effects.setCompanyId;
+    if (typeof companyId !== 'string') return opt;
+
+    const company = getCompany(companyId);
+    if (!company) return opt;
+
+    let seniority = state.player.seniority;
+    if (opt.effects.promote && seniority < MAX_SENIORITY) {
+      seniority += 1;
+    }
+
+    const projectedSalary = computeSalary(
+      seniority,
+      company.salaryMultiplier,
+      getSalaryMultiplier(state.career.currentYear),
+    );
+
+    return {
+      ...opt,
+      offeredCompany: {
+        id: company.id,
+        name: company.name,
+        type: company.type,
+        prestige: company.prestige,
+        salaryMultiplier: company.salaryMultiplier,
+      },
+      projectedSalary,
     };
   }
 }
