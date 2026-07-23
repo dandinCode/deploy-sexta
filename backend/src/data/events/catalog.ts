@@ -357,7 +357,6 @@ export const gameEvents: GameEvent[] = [
       {
         id: 'refuse',
         label: 'Recusar e agendar segunda',
-        requirements: { minAttributes: { discipline: 45 } },
         effects: {
           attributes: { reputation: 6, discipline: 4, leadership: 3 },
           addAchievement: 'Anti-Deploy-Sexta',
@@ -463,6 +462,15 @@ export const gameEvents: GameEvent[] = [
         },
       },
       {
+        id: 'cash_bonus',
+        label: 'Pedir bônus em dinheiro e seguir o ritmo',
+        effects: {
+          wealth: 8000,
+          raisePct: 0.05,
+          attributes: { business: 2, mentalHealth: 2 },
+        },
+      },
+      {
         id: 'equity_focus',
         label: 'Negociar equity',
         requirements: { minAttributes: { business: 45 } },
@@ -491,6 +499,15 @@ export const gameEvents: GameEvent[] = [
         },
       },
       {
+        id: 'escalate_oncall',
+        label: 'Acionar o on-call e estabilizar o essencial',
+        effects: {
+          attributes: { devops: 3, reputation: 3, mentalHealth: -4 },
+          skills: { aws: 2 },
+          addTimelineNote: 'Incidente estabilizado com ajuda do on-call',
+        },
+      },
+      {
         id: 'blameless_postmortem',
         label: 'Corrigir e fazer postmortem blameless',
         requirements: { minAttributes: { leadership: 40 } },
@@ -511,11 +528,20 @@ export const gameEvents: GameEvent[] = [
     options: [
       {
         id: 'innovate',
-        label: 'Acelerar inovação',
+        label: 'Acelerar inovação no produto',
         effects: {
           attributes: { creativity: 6, discipline: 3, mentalHealth: -6 },
           wealth: -8000,
           addProject: 'Pivot competitivo',
+        },
+      },
+      {
+        id: 'double_down_customers',
+        label: 'Focar em retenção e clientes atuais',
+        effects: {
+          attributes: { business: 4, communication: 2, reputation: 3 },
+          wealth: -2000,
+          addProject: 'Programa de retenção',
         },
       },
       {
@@ -838,17 +864,27 @@ export const gameEvents: GameEvent[] = [
     tags: ['career', 'crisis'],
     options: [
       {
-        id: 'got_laid_off',
-        label: 'Você foi cortado',
+        id: 'accept_package',
+        label: 'Aceitar o pacote e sair',
         effects: {
           fire: true,
-          attributes: { mentalHealth: -15 },
-          addTimelineNote: 'Layoff',
+          wealth: 12000,
+          attributes: { mentalHealth: -10, business: 2 },
+          addTimelineNote: 'Aceitou pacote de layoff',
+        },
+      },
+      {
+        id: 'fight_to_stay',
+        label: 'Pedir transferência interna e tentar ficar',
+        effects: {
+          attributes: { mentalHealth: -12, networking: 3, communication: 2 },
+          raisePct: -0.08,
+          addTimelineNote: 'Sobreviveu ao layoff em outro time',
         },
       },
       {
         id: 'survived',
-        label: 'Sobreviveu — por enquanto',
+        label: 'Seu time foi poupado — por enquanto',
         requirements: { minAttributes: { reputation: 55 } },
         effects: {
           attributes: { mentalHealth: -8, discipline: 3 },
@@ -894,7 +930,7 @@ export const gameEvents: GameEvent[] = [
     options: [
       {
         id: 'speak',
-        label: 'Aceitar e apresentar',
+        label: 'Aceitar e apresentar uma talk',
         requirements: { minAttributes: { communication: 40 } },
         effects: {
           attributes: { communication: 8, reputation: 10, networking: 6 },
@@ -953,8 +989,16 @@ export const gameEvents: GameEvent[] = [
         },
       },
       {
+        id: 'pair_debug',
+        label: 'Chamar um colega e debugar em dupla',
+        effects: {
+          attributes: { reputation: 5, backend: 2, networking: 2, mentalHealth: -5 },
+          skills: { node: 2 },
+        },
+      },
+      {
         id: 'team_fix',
-        label: 'Organizar o time',
+        label: 'Organizar o time no war room',
         requirements: { minAttributes: { leadership: 45 } },
         effects: {
           attributes: { leadership: 6, reputation: 6, mentalHealth: -4 },
@@ -1103,20 +1147,29 @@ export const gameEvents: GameEvent[] = [
     tags: ['career', 'money'],
     options: [
       {
+        id: 'accept_standard',
+        label: 'Aceitar o reajuste padrão',
+        effects: {
+          raisePct: 0.04,
+          attributes: { mentalHealth: 3 },
+        },
+      },
+      {
+        id: 'ask_benefits',
+        label: 'Pedir benefícios e remoto em troca de % menor',
+        effects: {
+          raisePct: 0.02,
+          attributes: { mentalHealth: 6, business: 2 },
+          wealth: 1500,
+        },
+      },
+      {
         id: 'negotiate_hard',
         label: 'Negociar com dados de mercado',
         requirements: { minAttributes: { business: 45 } },
         effects: {
           raisePct: 0.1,
           attributes: { business: 3, reputation: 2 },
-        },
-      },
-      {
-        id: 'accept_standard',
-        label: 'Aceitar o reajuste padrão',
-        effects: {
-          raisePct: 0.04,
-          attributes: { mentalHealth: 3 },
         },
       },
     ],

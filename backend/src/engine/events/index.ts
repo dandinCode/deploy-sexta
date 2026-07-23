@@ -90,8 +90,16 @@ export const EVENT_HARD_COOLDOWN = 5;
 /** Meses de intervalo entre eventos diferentes sobre o mesmo tema. */
 export const EVENT_GROUP_HARD_COOLDOWN = 8;
 
+export function listAvailableOptions(state: GameState, event: GameEvent) {
+  return event.options.filter((opt) => meetsRequirement(state, opt.requirements));
+}
+
 export function filterEligibleEvents(state: GameState): GameEvent[] {
-  return gameEvents.filter((event) => meetsRequirement(state, event.requirements));
+  return gameEvents.filter(
+    (event) =>
+      meetsRequirement(state, event.requirements) &&
+      listAvailableOptions(state, event).length >= 2,
+  );
 }
 
 function recentHistory(state: GameState): string[] {
@@ -232,8 +240,4 @@ export function selectEvent(state: GameState, rng: Rng): GameEvent {
 
 export function getEventById(id: string): GameEvent | undefined {
   return gameEvents.find((e) => e.id === id);
-}
-
-export function listAvailableOptions(state: GameState, event: GameEvent) {
-  return event.options.filter((opt) => meetsRequirement(state, opt.requirements));
 }
