@@ -5,8 +5,11 @@ import { StatusBar } from '@/components/StatusBar';
 import { EventPanel } from '@/components/EventPanel';
 import { EndScreen } from '@/components/EndScreen';
 import { RankingBoard } from '@/components/RankingBoard';
+import { HowToPlay } from '@/components/HowToPlay';
 import { useGameStore } from '@/store/gameStore';
 import { Github } from 'lucide-react';
+
+type HomeView = 'home' | 'how-to-play';
 
 export default function App() {
   const {
@@ -25,12 +28,17 @@ export default function App() {
   } = useGameStore();
 
   const [name, setName] = useState('Dev Anônimo');
+  const [homeView, setHomeView] = useState<HomeView>('home');
 
   useEffect(() => {
     void loadMeta();
   }, [loadMeta]);
 
   const pickLimit = meta?.config.draft.pick ?? 3;
+
+  if (!game && homeView === 'how-to-play') {
+    return <HowToPlay onBack={() => setHomeView('home')} />;
+  }
 
   if (!game) {
     return (
@@ -64,14 +72,23 @@ export default function App() {
                 className="mb-6 h-12 w-full max-w-md border border-[var(--border)] bg-[var(--panel)] px-4 font-mono text-[var(--text)] outline-none focus:border-[var(--accent)]"
               />
 
-              <Button
-                size="lg"
-                disabled={loading || !name.trim()}
-                onClick={() => void startGame(name.trim())}
-                className="w-fit"
-              >
-                {loading ? 'Iniciando...' : 'Começar draft'}
-              </Button>
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  size="lg"
+                  disabled={loading || !name.trim()}
+                  onClick={() => void startGame(name.trim())}
+                  className="w-fit"
+                >
+                  {loading ? 'Iniciando...' : 'Começar draft'}
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => setHomeView('how-to-play')}
+                >
+                  Como jogar
+                </Button>
+              </div>
 
               {error && (
                 <p className="mt-4 font-mono text-sm text-[var(--danger)]">{error}</p>
