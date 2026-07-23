@@ -93,6 +93,7 @@ export interface Requirement {
   maxWealth?: number;
   minSalary?: number;
   hasCompany?: boolean;
+  excludeCompanyIds?: string[];
   minSeniority?: number;
   maxSeniority?: number;
   minMonthsInLevel?: number;

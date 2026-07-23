@@ -28,6 +28,13 @@ export function meetsRequirement(
     const has = player.companyId !== null;
     if (req.hasCompany !== has) return false;
   }
+  if (
+    req.excludeCompanyIds?.length &&
+    player.companyId !== null &&
+    req.excludeCompanyIds.includes(player.companyId)
+  ) {
+    return false;
+  }
   if (req.minSeniority !== undefined && player.seniority < req.minSeniority) {
     return false;
   }
@@ -91,7 +98,18 @@ export const EVENT_HARD_COOLDOWN = 5;
 export const EVENT_GROUP_HARD_COOLDOWN = 8;
 
 export function listAvailableOptions(state: GameState, event: GameEvent) {
-  return event.options.filter((opt) => meetsRequirement(state, opt.requirements));
+  return event.options.filter((opt) => {
+    if (!meetsRequirement(state, opt.requirements)) return false;
+    // Não oferecer vaga na empresa em que o jogador já está.
+    const targetCompany = opt.effects.setCompanyId;
+    if (
+      typeof targetCompany === 'string' &&
+      state.player.companyId === targetCompany
+    ) {
+      return false;
+    }
+    return true;
+  });
 }
 
 export function filterEligibleEvents(state: GameState): GameEvent[] {

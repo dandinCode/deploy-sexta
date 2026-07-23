@@ -136,6 +136,7 @@ export const gameEvents: GameEvent[] = [
     requirements: {
       minSeniority: 2,
       minAttributes: { reputation: 45 },
+      excludeCompanyIds: ['banco_digital'],
     },
     tags: ['career', 'opportunity'],
     options: [
@@ -384,6 +385,7 @@ export const gameEvents: GameEvent[] = [
       minSeniority: 3,
       minAttributes: { reputation: 55, logic: 50 },
       hasCompany: true,
+      excludeCompanyIds: ['google'],
     },
     tags: ['opportunity', 'career'],
     options: [
