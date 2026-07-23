@@ -83,6 +83,30 @@ export const gameEvents: GameEvent[] = [
           addAchievement: 'Primeiro CLT',
         },
       },
+      {
+        id: 'junior_agency',
+        label: 'Vaga Júnior na Agência Deploy',
+        effects: {
+          setCompanyId: 'agencia_web',
+          promote: true,
+          setCareerPath: 'clt',
+          attributes: { frontend: 4, creativity: 2 },
+          addTimelineNote: 'Entrou na Agência Deploy como Júnior',
+          addAchievement: 'Primeiro CLT',
+        },
+      },
+      {
+        id: 'junior_factory',
+        label: 'Vaga Júnior na Nearshore Bits',
+        effects: {
+          setCompanyId: 'factory_nearshore',
+          promote: true,
+          setCareerPath: 'clt',
+          attributes: { discipline: 3, backend: 2 },
+          addTimelineNote: 'Entrou na Nearshore Bits como Júnior',
+          addAchievement: 'Primeiro CLT',
+        },
+      },
     ],
   },
   {
@@ -126,6 +150,47 @@ export const gameEvents: GameEvent[] = [
           addTimelineNote: 'Recolocado na Agência Deploy',
         },
       },
+      {
+        id: 'join_factory',
+        label: 'Aceitar vaga na Nearshore Bits',
+        effects: {
+          setCompanyId: 'factory_nearshore',
+          setCareerPath: 'clt',
+          attributes: { discipline: 2, backend: 2 },
+          addTimelineNote: 'Recolocado na Nearshore Bits',
+        },
+      },
+      {
+        id: 'join_consultoria',
+        label: 'Aceitar vaga na Stack Partners',
+        effects: {
+          setCompanyId: 'consultoria_global',
+          setCareerPath: 'consultant',
+          attributes: { communication: 3, business: 2 },
+          addTimelineNote: 'Recolocado na Stack Partners',
+        },
+      },
+      {
+        id: 'join_govtech',
+        label: 'Aceitar vaga na Serpro Soft',
+        effects: {
+          setCompanyId: 'govtech_br',
+          setCareerPath: 'clt',
+          attributes: { discipline: 4, mentalHealth: 2 },
+          addTimelineNote: 'Recolocado na Serpro Soft',
+        },
+      },
+      {
+        id: 'join_scaleup',
+        label: 'Aceitar vaga na EntregaJá Tech',
+        requirements: { minYear: 2016 },
+        effects: {
+          setCompanyId: 'scaleup_logistica',
+          setCareerPath: 'clt',
+          attributes: { reputation: 4, devops: 2 },
+          addTimelineNote: 'Recolocado na EntregaJá Tech',
+        },
+      },
     ],
   },
   {
@@ -139,6 +204,7 @@ export const gameEvents: GameEvent[] = [
       excludeCompanyIds: ['banco_digital'],
     },
     tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
     options: [
       {
         id: 'accept_bank',
@@ -154,6 +220,213 @@ export const gameEvents: GameEvent[] = [
         id: 'decline_bank',
         label: 'Recusar',
         effects: { attributes: { mentalHealth: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_nubank',
+    title: 'Vaga no NuBank Pixel',
+    description: 'Fintech unicórnio. Processo famoso por ser difícil — e por pagar bem.',
+    weight: 7,
+    requirements: {
+      minYear: 2015,
+      minSeniority: 2,
+      minAttributes: { reputation: 50, logic: 48 },
+      excludeCompanyIds: ['nubank_co'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_nubank',
+        label: 'Aceitar a vaga',
+        effects: {
+          setCompanyId: 'nubank_co',
+          setCareerPath: 'clt',
+          attributes: { reputation: 8, mentalHealth: -4 },
+          addTimelineNote: 'Entrou no NuBank Pixel',
+        },
+      },
+      {
+        id: 'decline_nubank',
+        label: 'Recusar',
+        effects: { attributes: { mentalHealth: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_mercado_livre',
+    title: 'Vaga no MercadoLivre Tech',
+    description: 'O marketplace quer gente pra escalar checkout, logística e ads.',
+    weight: 7,
+    requirements: {
+      minYear: 2014,
+      minSeniority: 2,
+      minAttributes: { reputation: 50, backend: 45 },
+      excludeCompanyIds: ['bigtech_br'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_ml',
+        label: 'Aceitar a vaga',
+        effects: {
+          setCompanyId: 'bigtech_br',
+          setCareerPath: 'clt',
+          attributes: { reputation: 9, architecture: 3 },
+          addTimelineNote: 'Entrou no MercadoLivre Tech',
+        },
+      },
+      {
+        id: 'decline_ml',
+        label: 'Recusar',
+        effects: { attributes: { mentalHealth: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_ifood',
+    title: 'Vaga na iComida Tech',
+    description: 'Delivery em escala. Pico de sexta à noite é o novo Black Friday.',
+    weight: 6,
+    requirements: {
+      minYear: 2016,
+      minSeniority: 2,
+      minAttributes: { reputation: 48, devops: 40 },
+      excludeCompanyIds: ['ifood_tech'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_ifood',
+        label: 'Aceitar a vaga',
+        effects: {
+          setCompanyId: 'ifood_tech',
+          setCareerPath: 'clt',
+          attributes: { reputation: 7, devops: 3, mentalHealth: -3 },
+          addTimelineNote: 'Entrou na iComida Tech',
+        },
+      },
+      {
+        id: 'decline_ifood',
+        label: 'Recusar',
+        effects: { attributes: { mentalHealth: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_credito',
+    title: 'Vaga na CrediRay',
+    description: 'Scale-up de crédito. Equity + pressão + roadmap que muda toda sprint.',
+    weight: 6,
+    requirements: {
+      minYear: 2018,
+      minSeniority: 2,
+      minAttributes: { reputation: 48, business: 35 },
+      excludeCompanyIds: ['unicorno_fintech'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_credito',
+        label: 'Aceitar a vaga',
+        effects: {
+          setCompanyId: 'unicorno_fintech',
+          setCareerPath: 'clt',
+          attributes: { reputation: 6, business: 3, mentalHealth: -4 },
+          wealth: 5000,
+          addTimelineNote: 'Entrou na CrediRay',
+        },
+      },
+      {
+        id: 'decline_credito',
+        label: 'Recusar',
+        effects: { attributes: { mentalHealth: 2 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_microsoft',
+    title: 'Vaga na Microsoft',
+    description: 'Recruiter fala em Azure, .NET e "impacto global". Processo em inglês.',
+    weight: 5,
+    requirements: {
+      minYear: 2015,
+      minSeniority: 3,
+      minAttributes: { reputation: 55, logic: 52 },
+      hasCompany: true,
+      excludeCompanyIds: ['microsoft_co'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_microsoft',
+        label: 'Aceitar e se mudar',
+        effects: {
+          setCompanyId: 'microsoft_co',
+          setCareerPath: 'clt',
+          attributes: { reputation: 12, cloud: 4, mentalHealth: -4 },
+          addAchievement: 'Big Tech',
+          addTimelineNote: 'Entrou na Microsoft',
+        },
+      },
+      {
+        id: 'negotiate_microsoft',
+        label: 'Usar como contraproposta (aumento)',
+        effects: {
+          raisePct: 0.15,
+          attributes: { business: 4, reputation: 2 },
+        },
+      },
+      {
+        id: 'decline_microsoft',
+        label: 'Recusar educadamente',
+        effects: { attributes: { mentalHealth: 4, reputation: 1 } },
+      },
+    ],
+  },
+  {
+    id: 'offer_amazon',
+    title: 'Vaga na Amazon',
+    description: 'Leadership Principles, loop de entrevistas e oferta com RSUs.',
+    weight: 5,
+    requirements: {
+      minYear: 2016,
+      minSeniority: 3,
+      minAttributes: { reputation: 55, discipline: 50 },
+      hasCompany: true,
+      excludeCompanyIds: ['amazon_co'],
+    },
+    tags: ['career', 'opportunity'],
+    cooldownGroup: 'external_offer',
+    options: [
+      {
+        id: 'accept_amazon',
+        label: 'Aceitar e se mudar',
+        effects: {
+          setCompanyId: 'amazon_co',
+          setCareerPath: 'clt',
+          attributes: { reputation: 13, devops: 4, mentalHealth: -6 },
+          addAchievement: 'Big Tech',
+          addTimelineNote: 'Entrou na Amazon',
+        },
+      },
+      {
+        id: 'negotiate_amazon',
+        label: 'Usar como contraproposta (aumento)',
+        effects: {
+          raisePct: 0.16,
+          attributes: { business: 4, reputation: 2 },
+        },
+      },
+      {
+        id: 'decline_amazon',
+        label: 'Recusar educadamente',
+        effects: { attributes: { mentalHealth: 4, reputation: 1 } },
       },
     ],
   },
@@ -388,6 +661,7 @@ export const gameEvents: GameEvent[] = [
       excludeCompanyIds: ['google'],
     },
     tags: ['opportunity', 'career'],
+    cooldownGroup: 'external_offer',
     options: [
       {
         id: 'accept_google',
