@@ -95,11 +95,14 @@ export function listAvailableOptions(state: GameState, event: GameEvent) {
 }
 
 export function filterEligibleEvents(state: GameState): GameEvent[] {
-  return gameEvents.filter(
-    (event) =>
-      meetsRequirement(state, event.requirements) &&
-      listAvailableOptions(state, event).length >= 2,
-  );
+  return gameEvents.filter((event) => {
+    if (!meetsRequirement(state, event.requirements)) return false;
+    const available = listAvailableOptions(state, event).length;
+    // Eventos com uma única opção autorada (ex.: layoff) são válidos;
+    // demais precisam de pelo menos 2 escolhas disponíveis.
+    if (event.options.length === 1) return available === 1;
+    return available >= 2;
+  });
 }
 
 function recentHistory(state: GameState): string[] {

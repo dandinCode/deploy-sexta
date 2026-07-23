@@ -865,30 +865,12 @@ export const gameEvents: GameEvent[] = [
     options: [
       {
         id: 'accept_package',
-        label: 'Aceitar o pacote e sair',
+        label: 'Continuar',
         effects: {
           fire: true,
           wealth: 12000,
           attributes: { mentalHealth: -10, business: 2 },
           addTimelineNote: 'Aceitou pacote de layoff',
-        },
-      },
-      {
-        id: 'fight_to_stay',
-        label: 'Pedir transferência interna e tentar ficar',
-        effects: {
-          attributes: { mentalHealth: -12, networking: 3, communication: 2 },
-          raisePct: -0.08,
-          addTimelineNote: 'Sobreviveu ao layoff em outro time',
-        },
-      },
-      {
-        id: 'survived',
-        label: 'Seu time foi poupado — por enquanto',
-        requirements: { minAttributes: { reputation: 55 } },
-        effects: {
-          attributes: { mentalHealth: -8, discipline: 3 },
-          raisePct: -0.05,
         },
       },
     ],
