@@ -357,6 +357,7 @@ export async function shareResultOnWhatsApp(
   const file = new File([blob], 'deploy-sexta-resultado.png', {
     type: 'image/png',
   });
+  const playUrl = window.location.origin + window.location.pathname;
 
   if (typeof navigator.share !== 'function') {
     throw new Error(
@@ -364,16 +365,28 @@ export async function shareResultOnWhatsApp(
     );
   }
 
+  // Imagem + link como legenda (WhatsApp costuma anexar os dois).
   const data: ShareData = {
     files: [file],
     title: 'Deploy Sexta',
+    text: `Jogue Deploy Sexta: ${playUrl}`
   };
 
   try {
     if (navigator.canShare && !navigator.canShare(data)) {
-      throw new Error(
-        'Este navegador não permite encaminhar imagem. Abra no celular para enviar no WhatsApp.',
-      );
+      // Alguns browsers aceitam arquivo, mas rejeitam url junto — tenta só imagem + texto.
+      const fallback: ShareData = {
+        files: [file],
+        title: 'Deploy Sexta',
+        text: playUrl,
+      };
+      if (!navigator.canShare(fallback)) {
+        throw new Error(
+          'Este navegador não permite encaminhar imagem. Abra no celular para enviar no WhatsApp.',
+        );
+      }
+      await navigator.share(fallback);
+      return;
     }
   } catch (err) {
     if (err instanceof Error && err.message.includes('encaminhar imagem')) throw err;
