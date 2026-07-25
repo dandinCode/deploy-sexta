@@ -21,16 +21,20 @@ export function EventPanel({ event, loading, onChoose }: Props) {
   const hasVacancyOffer = event.options.some((opt) => opt.offeredCompany);
 
   return (
-    <section className="animate-fade-in flex flex-1 flex-col border border-[var(--border)] bg-[var(--panel)] p-6">
-      <div className="mb-2 font-mono text-xs tracking-widest text-[var(--accent)]">
-        {hasVacancyOffer ? 'PROPOSTA / VAGA' : 'EVENTO DO MÊS'}
+    <section className="animate-fade-in flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] flex-col overflow-hidden border border-[var(--border)] bg-[var(--panel)] p-5 md:p-6">
+      <div className="shrink-0">
+        <div className="mb-2 font-mono text-xs tracking-widest text-[var(--accent)]">
+          {hasVacancyOffer ? 'PROPOSTA / VAGA' : 'EVENTO DO MÊS'}
+        </div>
+        <h2 className="mb-2 font-[family-name:var(--font-display)] text-2xl font-bold leading-tight md:text-3xl">
+          {event.title}
+        </h2>
+        <p className="mb-4 max-h-20 overflow-y-auto text-sm text-[var(--muted)] md:max-h-24 md:text-base">
+          {event.description}
+        </p>
       </div>
-      <h2 className="mb-3 font-[family-name:var(--font-display)] text-3xl font-bold leading-tight">
-        {event.title}
-      </h2>
-      <p className="mb-8 max-w-2xl text-[var(--muted)]">{event.description}</p>
 
-      <div className="mt-auto flex flex-col gap-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
         {event.options.map((opt) => (
           <OptionButton
             key={opt.id}
@@ -59,11 +63,11 @@ function OptionButton({
     <Button
       variant="outline"
       size="lg"
-      className="h-auto min-h-12 flex-col items-stretch justify-start gap-2 py-3 text-left"
+      className="h-auto min-h-11 shrink-0 flex-col items-stretch justify-start gap-1.5 py-2.5 text-left"
       disabled={loading}
       onClick={() => onChoose(option.id)}
     >
-      <span className="font-semibold">{option.label}</span>
+      <span className="font-semibold leading-snug">{option.label}</span>
       {company && (
         <VacancyDetails company={company} salary={option.projectedSalary} />
       )}
@@ -86,7 +90,7 @@ function VacancyDetails({
   const typeLabel = COMPANY_TYPE_LABELS[company.type] ?? company.type;
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--border)] pt-2 font-mono text-[11px] font-normal text-[var(--muted)]">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--border)] pt-1.5 font-mono text-[11px] font-normal text-[var(--muted)]">
       <span className="text-[var(--text)]">{company.name}</span>
       <span>{typeLabel}</span>
       <span>Prestígio {company.prestige}</span>

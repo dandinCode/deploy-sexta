@@ -187,8 +187,10 @@ export default function App() {
         </Button>
       </header>
 
-      <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[280px_1fr]">
-        <StatusBar game={game} skillLabels={meta?.skills} />
+      <div className="mx-auto grid max-w-6xl items-start gap-4 lg:grid-cols-[280px_1fr]">
+        <div className="lg:h-[calc(100dvh-8rem)] lg:max-h-[680px] lg:overflow-y-auto">
+          <StatusBar game={game} skillLabels={meta?.skills} />
+        </div>
         {game.currentEvent ? (
           <EventPanel
             event={game.currentEvent}
@@ -196,7 +198,7 @@ export default function App() {
             onChoose={(id) => void choose(id)}
           />
         ) : (
-          <div className="border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
+          <div className="flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
             Aguardando evento...
           </div>
         )}
