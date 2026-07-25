@@ -91,7 +91,10 @@ function meetsMinSkills(skills: SkillMap, min: SkillMap): boolean {
 }
 
 /** Quantos meses de histórico guardamos para cooldown. */
-export const EVENT_HISTORY_SIZE = 14;
+export const EVENT_HISTORY_SIZE = 14; 
+
+export const MAX_EVENT_OPTIONS = 5;
+
 /** Meses em que o mesmo evento fica bloqueado se houver alternativa. */
 export const EVENT_HARD_COOLDOWN = 5;
 /** Meses de intervalo entre eventos diferentes sobre o mesmo tema. */
@@ -99,17 +102,18 @@ export const EVENT_GROUP_HARD_COOLDOWN = 8;
 
 export function listAvailableOptions(state: GameState, event: GameEvent) {
   return event.options.filter((opt) => {
-    if (!meetsRequirement(state, opt.requirements)) return false;
-    // Não oferecer vaga na empresa em que o jogador já está.
-    const targetCompany = opt.effects.setCompanyId;
-    if (
-      typeof targetCompany === 'string' &&
-      state.player.companyId === targetCompany
-    ) {
-      return false;
-    }
-    return true;
-  });
+      if (!meetsRequirement(state, opt.requirements)) return false;
+      // Não oferecer vaga na empresa em que o jogador já está.
+      const targetCompany = opt.effects.setCompanyId;
+      if (
+        typeof targetCompany === 'string' &&
+        state.player.companyId === targetCompany
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .slice(0, MAX_EVENT_OPTIONS);
 }
 
 export function filterEligibleEvents(state: GameState): GameEvent[] {
