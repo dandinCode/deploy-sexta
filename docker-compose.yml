@@ -32,6 +32,7 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: http://localhost:3001/api
+        VITE_DEVICE_STORAGE_KEY: ds_ck
     ports:
       - "5173:80"
     depends_on:

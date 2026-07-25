@@ -5,18 +5,27 @@ import type {
   RankingCategory,
   RankingResponse,
 } from '../types/game';
+import { getDeviceId } from '../lib/device';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001/api';
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'X-Device-Id': getDeviceId(),
+    ...(init?.headers as Record<string, string> | undefined),
+  };
+
   const res = await fetch(`${API_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
     ...init,
+    headers,
   });
 
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new Error(data.error ?? `Erro HTTP ${res.status}`);
+    throw new Error(
+      (data as { error?: string }).error ?? `Erro HTTP ${res.status}`,
+    );
   }
   return data as T;
 }

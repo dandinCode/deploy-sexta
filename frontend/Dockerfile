@@ -16,6 +16,8 @@ RUN npm install
 COPY . .
 ARG VITE_API_URL=http://localhost:3001/api
 ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_DEVICE_STORAGE_KEY=ds_ck
+ENV VITE_DEVICE_STORAGE_KEY=$VITE_DEVICE_STORAGE_KEY
 RUN npm run build
 
 FROM nginx:alpine AS runner

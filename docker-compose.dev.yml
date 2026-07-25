@@ -43,6 +43,7 @@ services:
       - "5173:5173"
     environment:
       VITE_API_URL: http://localhost:3001/api
+      VITE_DEVICE_STORAGE_KEY: ds_ck
       CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./frontend:/app
