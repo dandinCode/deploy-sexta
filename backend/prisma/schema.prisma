@@ -41,3 +41,19 @@ model LeaderboardEntry {
   @@index([monthsPlayed(sort: Desc)])
   @@index([peakSalary(sort: Desc)])
 }
+
+model ClientDevice {
+  deviceId     String   @id
+  lastIp       String
+  firstSeenAt  DateTime @default(now())
+  lastSeenAt   DateTime @updatedAt
+  requestCount Int      @default(0)
+
+  @@index([lastIp])
+}
+
+model BannedIp {
+  ip        String   @id
+  reason    String?
+  createdAt DateTime @default(now())
+}
