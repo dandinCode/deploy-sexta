@@ -2,22 +2,31 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import type { GameState } from '../engine/types.js';
 import { prisma, useMemory } from '../db.js';
 
+export type GameIdentity = {
+  deviceId: string | null;
+  clientIp: string;
+};
+
 type StoredGame = {
   id: string;
   state: GameState;
   status: 'DRAFT' | 'PLAYING' | 'FINISHED';
   score: number | null;
+  deviceId: string | null;
+  clientIp: string | null;
 };
 
 const memory = new Map<string, StoredGame>();
 
 export class GameRepository {
-  async create(state: GameState) {
+  async create(state: GameState, identity?: GameIdentity) {
     const row: StoredGame = {
       id: state.id,
       state,
       status: mapStatus(state.status),
       score: state.score,
+      deviceId: identity?.deviceId ?? null,
+      clientIp: identity?.clientIp ?? null,
     };
 
     if (useMemory || !prisma) {
@@ -31,6 +40,8 @@ export class GameRepository {
         state: state as unknown as Prisma.InputJsonValue,
         status: mapStatus(state.status),
         score: state.score,
+        deviceId: row.deviceId,
+        clientIp: row.clientIp,
       },
     });
   }
@@ -43,11 +54,14 @@ export class GameRepository {
   }
 
   async save(state: GameState) {
+    const existing = await this.findById(state.id);
     const row: StoredGame = {
       id: state.id,
       state,
       status: mapStatus(state.status),
       score: state.score,
+      deviceId: existing?.deviceId ?? null,
+      clientIp: existing?.clientIp ?? null,
     };
 
     if (useMemory || !prisma) {

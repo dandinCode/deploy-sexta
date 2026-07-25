@@ -1,6 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { gameService } from '../services/game.service.js';
+import {
+  getClientIp,
+  getDeviceIdHeader,
+} from '../services/client-identity.service.js';
 
 export async function gameRoutes(app: FastifyInstance) {
   app.get('/health', async () => ({ ok: true, service: 'deploy-sexta' }));
@@ -15,7 +19,10 @@ export async function gameRoutes(app: FastifyInstance) {
       })
       .parse(request.body ?? {});
 
-    const game = await gameService.startGame(body.name ?? 'Dev Anônimo', body.seed);
+    const game = await gameService.startGame(body.name ?? 'Dev Anônimo', body.seed, {
+      deviceId: getDeviceIdHeader(request),
+      clientIp: getClientIp(request),
+    });
     return reply.code(201).send(game);
   });
 

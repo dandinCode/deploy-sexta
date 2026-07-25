@@ -14,13 +14,13 @@ import {
   MAX_SENIORITY,
 } from '../engine/index.js';
 import type { EventOption, GameState } from '../engine/types.js';
-import { gameRepository } from './game.repository.js';
+import { gameRepository, type GameIdentity } from './game.repository.js';
 import { rankingService, type RankingCategory } from './ranking.service.js';
 
 export class GameService {
-  async startGame(name: string, seed?: number) {
+  async startGame(name: string, seed?: number, identity?: GameIdentity) {
     const state = createNewGame(name || 'Dev Anônimo', seed);
-    await gameRepository.create(state);
+    await gameRepository.create(state, identity);
     return this.toPublic(state);
   }
 

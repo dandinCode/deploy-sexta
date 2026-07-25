@@ -12,10 +12,15 @@ model Game {
   state     Json
   status    GameStatus @default(DRAFT)
   score     Int?
+  deviceId  String?
+  clientIp  String?
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   leaderboardEntry LeaderboardEntry?
+
+  @@index([deviceId])
+  @@index([clientIp])
 }
 
 enum GameStatus {
