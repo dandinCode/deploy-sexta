@@ -34,7 +34,7 @@ export function EventPanel({ event, loading, onChoose }: Props) {
         </p>
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
+      <div className="mt-auto flex max-h-[58%] min-h-0 flex-col gap-2 overflow-y-auto pr-1">
         {event.options.map((opt) => (
           <OptionButton
             key={opt.id}
