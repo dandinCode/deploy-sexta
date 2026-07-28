@@ -1468,7 +1468,7 @@ export const gameEvents: GameEvent[] = [
     id: 'rare_death',
     title: 'Evento raro: destino cruel',
     description: 'Um acidente inesperado encerra sua história.',
-    weight: 0.3,
+    weight: 0.09,
     tags: ['ending', 'rare'],
     options: [
       {
