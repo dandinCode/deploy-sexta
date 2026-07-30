@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { gameService } from '../services/game.service.js';
+import { feedbackService } from '../services/feedback.service.js';
 import {
   getClientIp,
   getDeviceIdHeader,
@@ -79,5 +80,39 @@ export async function gameRoutes(app: FastifyInstance) {
 
     const entries = await gameService.getRanking(query.by, query.limit);
     return { by: query.by, entries };
+  });
+
+  app.post('/feedback', async (request, reply) => {
+    const body = z
+      .object({
+        authorName: z.string().min(1).max(40),
+        message: z.string().min(3).max(1000),
+        gameId: z.string().min(1).optional(),
+      })
+      .parse(request.body ?? {});
+
+    try {
+      const entry = await feedbackService.create({
+        ...body,
+        deviceId: getDeviceIdHeader(request),
+        clientIp: getClientIp(request),
+      });
+      return reply.code(201).send(entry);
+    } catch (err) {
+      return reply.code(400).send({
+        error: err instanceof Error ? err.message : 'Erro ao enviar feedback',
+      });
+    }
+  });
+
+  app.get('/feedback', async (request) => {
+    const query = z
+      .object({
+        limit: z.coerce.number().int().min(1).max(100).default(50),
+      })
+      .parse(request.query ?? {});
+
+    const entries = await feedbackService.list(query.limit);
+    return { entries };
   });
 }
