@@ -1,4 +1,6 @@
 import type {
+  FeedbackEntry,
+  FeedbackListResponse,
   GameState,
   GameStateWithRanking,
   MetaResponse,
@@ -50,4 +52,15 @@ export const api = {
     }),
   getRanking: (by: RankingCategory = 'wealth', limit = 20) =>
     request<RankingResponse>(`/ranking?by=${by}&limit=${limit}`),
+  submitFeedback: (payload: {
+    authorName: string;
+    message: string;
+    gameId?: string;
+  }) =>
+    request<FeedbackEntry>('/feedback', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+  getFeedback: (limit = 50) =>
+    request<FeedbackListResponse>(`/feedback?limit=${limit}`),
 };

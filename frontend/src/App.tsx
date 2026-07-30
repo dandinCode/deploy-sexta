@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { DraftCard } from '@/components/DraftCard';
 import { StatusBar } from '@/components/StatusBar';
@@ -6,10 +6,30 @@ import { EventPanel } from '@/components/EventPanel';
 import { EndScreen } from '@/components/EndScreen';
 import { RankingBoard } from '@/components/RankingBoard';
 import { HowToPlay } from '@/components/HowToPlay';
+import { FeedbackWidget } from '@/components/FeedbackWidget';
+import { FeedbackBoard } from '@/components/FeedbackBoard';
 import { useGameStore } from '@/store/gameStore';
 import { Github } from 'lucide-react';
 
-type HomeView = 'home' | 'how-to-play';
+type ShellView = 'main' | 'how-to-play' | 'feedback';
+
+function readInitialShellView(): ShellView {
+  if (typeof window === 'undefined') return 'main';
+  const page = new URLSearchParams(window.location.search).get('page');
+  if (page === 'feedback') return 'feedback';
+  if (page === 'how-to-play') return 'how-to-play';
+  return 'main';
+}
+
+function setPageQuery(view: ShellView) {
+  const url = new URL(window.location.href);
+  if (view === 'main') {
+    url.searchParams.delete('page');
+  } else {
+    url.searchParams.set('page', view);
+  }
+  window.history.replaceState({}, '', url);
+}
 
 export default function App() {
   const {
@@ -28,20 +48,28 @@ export default function App() {
   } = useGameStore();
 
   const [name, setName] = useState('Dev Anônimo');
-  const [homeView, setHomeView] = useState<HomeView>('home');
+  const [shellView, setShellView] = useState<ShellView>(readInitialShellView);
 
   useEffect(() => {
     void loadMeta();
   }, [loadMeta]);
 
-  const pickLimit = meta?.config.draft.pick ?? 3;
-
-  if (!game && homeView === 'how-to-play') {
-    return <HowToPlay onBack={() => setHomeView('home')} />;
+  function goTo(view: ShellView) {
+    setShellView(view);
+    setPageQuery(view);
   }
 
-  if (!game) {
-    return (
+  const pickLimit = meta?.config.draft.pick ?? 3;
+  const feedbackAuthor = game?.player.name ?? name;
+
+  let content: ReactNode;
+
+  if (shellView === 'feedback') {
+    content = <FeedbackBoard onBack={() => goTo('main')} />;
+  } else if (shellView === 'how-to-play' && !game) {
+    content = <HowToPlay onBack={() => goTo('main')} />;
+  } else if (!game) {
+    content = (
       <div className="relative min-h-screen overflow-x-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--accent-dim),_transparent_55%),linear-gradient(180deg,_#0b1210_0%,_#07100e_50%,_#050a09_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:48px_48px]" />
@@ -84,9 +112,16 @@ export default function App() {
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={() => setHomeView('how-to-play')}
+                  onClick={() => goTo('how-to-play')}
                 >
                   Como jogar
+                </Button>
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  onClick={() => goTo('feedback')}
+                >
+                  Feedbacks
                 </Button>
               </div>
 
@@ -111,10 +146,8 @@ export default function App() {
         </footer>
       </div>
     );
-  }
-
-  if (game.status === 'draft') {
-    return (
+  } else if (game.status === 'draft') {
+    content = (
       <div className="min-h-screen bg-[var(--bg)] px-4 py-8 md:px-8">
         <header className="mx-auto mb-8 max-w-6xl">
           <div className="mb-2 font-mono text-xs text-[var(--accent)]">DRAFT INICIAL</div>
@@ -156,10 +189,8 @@ export default function App() {
         </div>
       </div>
     );
-  }
-
-  if (game.status === 'finished') {
-    return (
+  } else if (game.status === 'finished') {
+    content = (
       <div className="min-h-screen bg-[var(--bg)] px-4 py-10 md:px-8">
         <EndScreen
           game={game}
@@ -169,46 +200,57 @@ export default function App() {
         />
       </div>
     );
+  } else {
+    content = (
+      <div className="min-h-screen bg-[var(--bg)] px-4 py-6 md:px-8">
+        <header className="mx-auto mb-6 flex max-w-6xl items-end justify-between gap-4">
+          <div>
+            <div className="font-mono text-xs tracking-widest text-[var(--accent)]">
+              DEPLOY SEXTA
+            </div>
+            <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold">
+              Mês {game.career.monthsPlayed + 1}
+            </h1>
+          </div>
+          <Button variant="ghost" size="sm" onClick={reset}>
+            Abandonar
+          </Button>
+        </header>
+
+        <div className="mx-auto grid max-w-6xl items-start gap-4 lg:grid-cols-[280px_1fr]">
+          <div className="lg:h-[calc(100dvh-8rem)] lg:max-h-[680px] lg:overflow-y-auto">
+            <StatusBar game={game} skillLabels={meta?.skills} />
+          </div>
+          {game.currentEvent ? (
+            <EventPanel
+              event={game.currentEvent}
+              loading={loading}
+              onChoose={(id) => void choose(id)}
+            />
+          ) : (
+            <div className="flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
+              Aguardando evento...
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <p className="mx-auto mt-4 max-w-6xl font-mono text-sm text-[var(--danger)]">
+            {error}
+          </p>
+        )}
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] px-4 py-6 md:px-8">
-      <header className="mx-auto mb-6 flex max-w-6xl items-end justify-between gap-4">
-        <div>
-          <div className="font-mono text-xs tracking-widest text-[var(--accent)]">
-            DEPLOY SEXTA
-          </div>
-          <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold">
-            Mês {game.career.monthsPlayed + 1}
-          </h1>
-        </div>
-        <Button variant="ghost" size="sm" onClick={reset}>
-          Abandonar
-        </Button>
-      </header>
-
-      <div className="mx-auto grid max-w-6xl items-start gap-4 lg:grid-cols-[280px_1fr]">
-        <div className="lg:h-[calc(100dvh-8rem)] lg:max-h-[680px] lg:overflow-y-auto">
-          <StatusBar game={game} skillLabels={meta?.skills} />
-        </div>
-        {game.currentEvent ? (
-          <EventPanel
-            event={game.currentEvent}
-            loading={loading}
-            onChoose={(id) => void choose(id)}
-          />
-        ) : (
-          <div className="flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
-            Aguardando evento...
-          </div>
-        )}
-      </div>
-
-      {error && (
-        <p className="mx-auto mt-4 max-w-6xl font-mono text-sm text-[var(--danger)]">
-          {error}
-        </p>
-      )}
-    </div>
+    <>
+      {content}
+      <FeedbackWidget
+        defaultAuthor={feedbackAuthor}
+        gameId={game?.id}
+        onOpenBoard={() => goTo('feedback')}
+      />
+    </>
   );
 }
