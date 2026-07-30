@@ -148,6 +148,18 @@ export interface RankingResponse {
   entries: RankingEntry[];
 }
 
+export interface FeedbackEntry {
+  id: string;
+  authorName: string;
+  message: string;
+  gameId: string | null;
+  createdAt: string;
+}
+
+export interface FeedbackListResponse {
+  entries: FeedbackEntry[];
+}
+
 export interface PlayerRanks {
   wealth: number | null;
   longevity: number | null;
