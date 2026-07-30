@@ -62,3 +62,15 @@ model BannedIp {
   reason    String?
   createdAt DateTime @default(now())
 }
+
+model Feedback {
+  id         String   @id @default(cuid())
+  authorName String
+  message    String
+  gameId     String?
+  deviceId   String?
+  clientIp   String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+}
