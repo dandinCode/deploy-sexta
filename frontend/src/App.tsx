@@ -70,12 +70,12 @@ export default function App() {
     content = <HowToPlay onBack={() => goTo('main')} />;
   } else if (!game) {
     content = (
-      <div className="relative min-h-screen overflow-x-hidden">
+      <div className="relative flex min-h-dvh flex-col overflow-x-hidden">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--accent-dim),_transparent_55%),linear-gradient(180deg,_#0b1210_0%,_#07100e_50%,_#050a09_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] [background-size:48px_48px]" />
 
-        <main className="relative mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-16">
-          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <main className="relative mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-6 py-10 md:py-12">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
             <div>
               <p className="mb-4 font-mono text-xs tracking-[0.3em] text-[var(--accent)]">
                 CARREIRA ROGUELIKE · TECH
@@ -133,7 +133,7 @@ export default function App() {
             <RankingBoard compact className="animate-fade-in" />
           </div>
         </main>
-        <footer className="relative z-10 border-t border-[var(--border)] px-6 py-5 text-center">
+        <footer className="relative z-10 shrink-0 border-t border-[var(--border)] px-6 py-4 text-center">
           <a
             href="https://github.com/dandinCode/deploy-sexta"
             target="_blank"
@@ -202,8 +202,8 @@ export default function App() {
     );
   } else {
     content = (
-      <div className="min-h-screen bg-[var(--bg)] px-4 py-6 md:px-8">
-        <header className="mx-auto mb-6 flex max-w-6xl items-end justify-between gap-4">
+      <div className="min-h-dvh bg-[var(--bg)] px-4 py-5 md:px-8 md:py-6">
+        <header className="mx-auto mb-5 flex max-w-6xl items-end justify-between gap-4">
           <div>
             <div className="font-mono text-xs tracking-widest text-[var(--accent)]">
               DEPLOY SEXTA
@@ -217,8 +217,8 @@ export default function App() {
           </Button>
         </header>
 
-        <div className="mx-auto grid max-w-6xl items-start gap-4 lg:grid-cols-[280px_1fr]">
-          <div className="lg:h-[calc(100dvh-8rem)] lg:max-h-[680px] lg:overflow-y-auto">
+        <div className="mx-auto grid max-w-6xl items-stretch gap-4 lg:grid-cols-[280px_1fr]">
+          <div className="lg:h-[calc(100dvh-7rem)] lg:max-h-[820px]">
             <StatusBar game={game} skillLabels={meta?.skills} />
           </div>
           {game.currentEvent ? (
@@ -228,7 +228,7 @@ export default function App() {
               onChoose={(id) => void choose(id)}
             />
           ) : (
-            <div className="flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
+            <div className="flex h-[calc(100dvh-7rem)] max-h-[820px] min-h-[480px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
               Aguardando evento...
             </div>
           )}
