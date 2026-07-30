@@ -25,7 +25,7 @@ export function StatusBar({ game, skillLabels = {} }: Props) {
   const recentTechnologies = technologies.slice(-6);
 
   return (
-    <aside className="flex flex-col gap-4 border border-[var(--border)] bg-[var(--panel)] p-4">
+    <aside className="flex h-full flex-col gap-4 border border-[var(--border)] bg-[var(--panel)] p-4">
       <div>
         <div className="font-[family-name:var(--font-display)] text-xl font-bold">
           {player.name}

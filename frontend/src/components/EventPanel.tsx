@@ -21,7 +21,7 @@ export function EventPanel({ event, loading, onChoose }: Props) {
   const hasVacancyOffer = event.options.some((opt) => opt.offeredCompany);
 
   return (
-    <section className="animate-fade-in flex h-[calc(100dvh-8rem)] max-h-[680px] min-h-[420px] flex-col overflow-hidden border border-[var(--border)] bg-[var(--panel)] p-5 md:p-6">
+    <section className="animate-fade-in flex h-[calc(100dvh-7rem)] max-h-[820px] min-h-[480px] flex-col overflow-hidden border border-[var(--border)] bg-[var(--panel)] p-5 md:p-6">
       <div className="shrink-0">
         <div className="mb-2 font-mono text-xs tracking-widest text-[var(--accent)]">
           {hasVacancyOffer ? 'PROPOSTA / VAGA' : 'EVENTO DO MÊS'}
