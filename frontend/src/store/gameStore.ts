@@ -1,5 +1,10 @@
 import { create } from 'zustand';
 import { api } from '../api/client';
+import {
+  clearActiveGameId,
+  getActiveGameId,
+  setActiveGameId,
+} from '../lib/activeGame';
 import type { GameState, MetaResponse, PlayerRanks } from '../types/game';
 
 interface GameStore {
@@ -7,9 +12,11 @@ interface GameStore {
   meta: MetaResponse | null;
   selectedCards: string[];
   loading: boolean;
+  booting: boolean;
   error: string | null;
   playerRanks: PlayerRanks | null;
   loadMeta: () => Promise<void>;
+  resumeActiveGame: () => Promise<void>;
   startGame: (name: string) => Promise<void>;
   toggleCard: (id: string) => void;
   confirmDraft: () => Promise<void>;
@@ -17,11 +24,20 @@ interface GameStore {
   reset: () => void;
 }
 
+function persistActiveGame(game: GameState) {
+  if (game.status === 'draft' || game.status === 'playing') {
+    setActiveGameId(game.id);
+    return;
+  }
+  clearActiveGameId();
+}
+
 export const useGameStore = create<GameStore>((set, get) => ({
   game: null,
   meta: null,
   selectedCards: [],
   loading: false,
+  booting: true,
   error: null,
   playerRanks: null,
 
@@ -34,10 +50,40 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
 
+  resumeActiveGame: async () => {
+    const activeId = getActiveGameId();
+    if (!activeId) {
+      set({ booting: false });
+      return;
+    }
+
+    set({ loading: true, error: null });
+    try {
+      const game = await api.getGame(activeId);
+      if (game.status === 'finished') {
+        clearActiveGameId();
+        set({ game: null, loading: false, booting: false, playerRanks: null });
+        return;
+      }
+      persistActiveGame(game);
+      set({
+        game,
+        selectedCards: [],
+        loading: false,
+        booting: false,
+        playerRanks: null,
+      });
+    } catch {
+      clearActiveGameId();
+      set({ game: null, loading: false, booting: false });
+    }
+  },
+
   startGame: async (name: string) => {
     set({ loading: true, error: null, selectedCards: [], playerRanks: null });
     try {
       const game = await api.startGame(name);
+      persistActiveGame(game);
       set({ game, loading: false });
     } catch (err) {
       set({
@@ -69,6 +115,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ loading: true, error: null });
     try {
       const next = await api.selectDraft(game.id, selectedCards);
+      persistActiveGame(next);
       set({ game: next, loading: false });
     } catch (err) {
       set({
@@ -85,6 +132,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     try {
       const next = await api.chooseOption(game.id, optionId);
       const { ranking, ...gameState } = next;
+      persistActiveGame(gameState);
       set({
         game: gameState,
         playerRanks: ranking ?? null,
@@ -98,6 +146,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }
   },
 
-  reset: () =>
-    set({ game: null, selectedCards: [], error: null, playerRanks: null }),
+  reset: () => {
+    clearActiveGameId();
+    set({ game: null, selectedCards: [], error: null, playerRanks: null });
+  },
 }));

@@ -37,9 +37,11 @@ export default function App() {
     meta,
     selectedCards,
     loading,
+    booting,
     error,
     playerRanks,
     loadMeta,
+    resumeActiveGame,
     startGame,
     toggleCard,
     confirmDraft,
@@ -51,8 +53,11 @@ export default function App() {
   const [shellView, setShellView] = useState<ShellView>(readInitialShellView);
 
   useEffect(() => {
-    void loadMeta();
-  }, [loadMeta]);
+    void (async () => {
+      await loadMeta();
+      await resumeActiveGame();
+    })();
+  }, [loadMeta, resumeActiveGame]);
 
   function goTo(view: ShellView) {
     setShellView(view);
@@ -64,7 +69,15 @@ export default function App() {
 
   let content: ReactNode;
 
-  if (shellView === 'feedback') {
+  if (booting && shellView === 'main') {
+    content = (
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--bg)] px-6">
+        <p className="font-mono text-sm text-[var(--muted)]">
+          Carregando carreira...
+        </p>
+      </div>
+    );
+  } else if (shellView === 'feedback') {
     content = <FeedbackBoard onBack={() => goTo('main')} />;
   } else if (shellView === 'how-to-play' && !game) {
     content = <HowToPlay onBack={() => goTo('main')} />;
