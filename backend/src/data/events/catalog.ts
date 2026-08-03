@@ -976,7 +976,7 @@ export const gameEvents: GameEvent[] = [
         label: 'React pelo ecossistema',
         effects: {
           skills: { javascript: 4, react: 9 },
-          attributes: { frontend: 5 },
+          attributes: { logic: -1, frontend: 5 },
           addProject: 'Frontend React',
         },
       },
@@ -996,7 +996,7 @@ export const gameEvents: GameEvent[] = [
         label: 'Java com Spring Boot',
         effects: {
           skills: { java: 9, spring: 9, sql: 3 },
-          attributes: { backend: 5, architecture: 3 },
+          attributes: { logic: 5, backend: 5, architecture: 3, mentalHealth: -1 },
           addProject: 'Plataforma Spring Boot',
         },
       },
@@ -1005,7 +1005,7 @@ export const gameEvents: GameEvent[] = [
         label: 'C# com .NET',
         effects: {
           skills: { csharp: 9, dotnet: 9, sql: 3 },
-          attributes: { backend: 5, discipline: 2 },
+          attributes: { logic: 4, backend: 5, discipline: 2 },
           addProject: 'Sistema em .NET',
         },
       },
@@ -1014,7 +1014,7 @@ export const gameEvents: GameEvent[] = [
         label: 'PHP com Laravel',
         effects: {
           skills: { php: 9, laravel: 9, sql: 3 },
-          attributes: { backend: 4, creativity: 2 },
+          attributes: { logic: 1, backend: 4, creativity: 2 },
           addProject: 'Produto Laravel',
         },
       },
@@ -1034,7 +1034,7 @@ export const gameEvents: GameEvent[] = [
         label: 'Construir com Python e Django',
         effects: {
           skills: { python: 9, django: 9, postgres: 3 },
-          attributes: { backend: 5, discipline: 2 },
+          attributes: { logic: 2, backend: 5, discipline: 2 },
           addProject: 'Produto Django',
         },
       },
@@ -1108,7 +1108,7 @@ export const gameEvents: GameEvent[] = [
         label: 'Aprender COBOL e encarar o legado',
         effects: {
           skills: { cobol: 12, sql: 3 },
-          attributes: { logic: 4, discipline: 5, mentalHealth: -3 },
+          attributes: { logic: 6, discipline: 5, mentalHealth: -3 },
           raisePct: 0.08,
           addProject: 'Modernização de mainframe',
           addAchievement: 'Arqueólogo de Software',
