@@ -25,15 +25,15 @@ export function StatusBar({ game, skillLabels = {} }: Props) {
   const recentTechnologies = technologies.slice(-6);
 
   return (
-    <aside className="flex h-full flex-col gap-4 border border-[var(--border)] bg-[var(--panel)] p-4">
-      <div>
-        <div className="font-[family-name:var(--font-display)] text-xl font-bold">
+    <aside className="flex min-h-full min-w-0 flex-col gap-3 border border-[var(--border)] bg-[var(--panel)] p-3 sm:gap-4 sm:p-4 lg:border-0">
+      <div className="min-w-0">
+        <div className="truncate font-[family-name:var(--font-display)] text-lg font-bold sm:text-xl">
           {player.name}
         </div>
-        <div className="font-mono text-xs text-[var(--muted)]">{player.title}</div>
+        <div className="truncate font-mono text-xs text-[var(--muted)]">{player.title}</div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+      <div className="grid grid-cols-2 gap-2 font-mono text-xs sm:gap-2">
         <Stat label="Idade" value={`${player.age}`} />
         <Stat label="Data" value={`${career.currentMonth}/${career.currentYear}`} />
         <Stat label="Salário/mês" value={formatMoney(player.salary)} />
@@ -115,7 +115,7 @@ function CurrentWork({ label, value }: { label: string; value: string }) {
       <div className="font-mono text-[10px] uppercase tracking-wide text-[var(--muted)]">
         {label}
       </div>
-      <div className="text-sm font-semibold text-[var(--text)]">{value}</div>
+      <div className="text-sm font-semibold break-words text-[var(--text)]">{value}</div>
     </div>
   );
 }

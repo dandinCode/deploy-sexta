@@ -215,33 +215,35 @@ export default function App() {
     );
   } else {
     content = (
-      <div className="min-h-dvh bg-[var(--bg)] px-4 py-5 md:px-8 md:py-6">
-        <header className="mx-auto mb-5 flex max-w-6xl items-end justify-between gap-4">
-          <div>
-            <div className="font-mono text-xs tracking-widest text-[var(--accent)]">
+      <div className="min-h-dvh bg-[var(--bg)] px-3 pb-20 pt-4 sm:px-4 md:px-8 md:pb-8 md:py-6">
+        <header className="mx-auto mb-4 flex max-w-6xl items-end justify-between gap-3 sm:mb-5 sm:gap-4">
+          <div className="min-w-0">
+            <div className="font-mono text-[10px] tracking-widest text-[var(--accent)] sm:text-xs">
               DEPLOY SEXTA
             </div>
-            <h1 className="font-[family-name:var(--font-display)] text-2xl font-bold">
+            <h1 className="truncate font-[family-name:var(--font-display)] text-xl font-bold sm:text-2xl">
               Mês {game.career.monthsPlayed + 1}
             </h1>
           </div>
-          <Button variant="ghost" size="sm" onClick={reset}>
+          <Button variant="ghost" size="sm" onClick={reset} className="shrink-0">
             Abandonar
           </Button>
         </header>
 
-        <div className="mx-auto grid max-w-6xl items-stretch gap-4 lg:grid-cols-[280px_1fr]">
-          <div className="lg:h-[calc(100dvh-7rem)] lg:max-h-[820px]">
+        <div className="mx-auto grid max-w-6xl gap-3 sm:gap-4 lg:grid-cols-[280px_1fr] lg:items-stretch">
+          <div className="order-2 min-w-0 lg:order-1 lg:h-[calc(100dvh-7rem)] lg:max-h-[820px] lg:overflow-y-auto lg:border lg:border-[var(--border)] lg:bg-[var(--panel)]">
             <StatusBar game={game} skillLabels={meta?.skills} />
           </div>
           {game.currentEvent ? (
-            <EventPanel
-              event={game.currentEvent}
-              loading={loading}
-              onChoose={(id) => void choose(id)}
-            />
+            <div className="order-1 min-w-0 lg:order-2">
+              <EventPanel
+                event={game.currentEvent}
+                loading={loading}
+                onChoose={(id) => void choose(id)}
+              />
+            </div>
           ) : (
-            <div className="flex h-[calc(100dvh-7rem)] max-h-[820px] min-h-[480px] items-center border border-[var(--border)] bg-[var(--panel)] p-6 font-mono text-sm text-[var(--muted)]">
+            <div className="order-1 flex min-h-[280px] items-center border border-[var(--border)] bg-[var(--panel)] p-4 font-mono text-sm text-[var(--muted)] sm:min-h-[360px] sm:p-6 lg:order-2 lg:h-[calc(100dvh-7rem)] lg:max-h-[820px]">
               Aguardando evento...
             </div>
           )}

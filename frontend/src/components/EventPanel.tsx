@@ -21,20 +21,20 @@ export function EventPanel({ event, loading, onChoose }: Props) {
   const hasVacancyOffer = event.options.some((opt) => opt.offeredCompany);
 
   return (
-    <section className="animate-fade-in flex h-[calc(100dvh-7rem)] max-h-[820px] min-h-[480px] flex-col overflow-hidden border border-[var(--border)] bg-[var(--panel)] p-5 md:p-6">
+    <section className="animate-fade-in flex min-h-[min(62dvh,520px)] w-full flex-col overflow-hidden border border-[var(--border)] bg-[var(--panel)] p-4 sm:min-h-[420px] sm:p-5 md:p-6 lg:h-[calc(100dvh-7rem)] lg:max-h-[820px] lg:min-h-[480px]">
       <div className="shrink-0">
-        <div className="mb-2 font-mono text-xs tracking-widest text-[var(--accent)]">
+        <div className="mb-2 font-mono text-[10px] tracking-widest text-[var(--accent)] sm:text-xs">
           {hasVacancyOffer ? 'PROPOSTA / VAGA' : 'EVENTO DO MÊS'}
         </div>
-        <h2 className="mb-2 font-[family-name:var(--font-display)] text-2xl font-bold leading-tight md:text-3xl">
+        <h2 className="mb-2 font-[family-name:var(--font-display)] text-xl font-bold leading-tight sm:text-2xl md:text-3xl">
           {event.title}
         </h2>
-        <p className="mb-4 max-h-20 overflow-y-auto text-sm text-[var(--muted)] md:max-h-24 md:text-base">
+        <p className="mb-4 max-h-24 overflow-y-auto text-sm text-[var(--muted)] sm:max-h-28 md:text-base">
           {event.description}
         </p>
       </div>
 
-      <div className="mt-auto flex max-h-[58%] min-h-0 flex-col gap-2 overflow-y-auto pr-1">
+      <div className="mt-auto flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1 lg:max-h-[58%] lg:flex-none">
         {event.options.map((opt) => (
           <OptionButton
             key={opt.id}
@@ -63,7 +63,7 @@ function OptionButton({
     <Button
       variant="outline"
       size="lg"
-      className="h-auto min-h-11 shrink-0 flex-col items-stretch justify-start gap-1.5 py-2.5 text-left"
+      className="h-auto min-h-11 w-full shrink-0 flex-col items-stretch justify-start gap-1.5 whitespace-normal py-2.5 text-left"
       disabled={loading}
       onClick={() => onChoose(option.id)}
     >
