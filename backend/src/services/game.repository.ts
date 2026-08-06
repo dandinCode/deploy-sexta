@@ -14,12 +14,14 @@ type StoredGame = {
   score: number | null;
   deviceId: string | null;
   clientIp: string | null;
+  updatedAt: Date;
 };
 
 const memory = new Map<string, StoredGame>();
 
 export class GameRepository {
   async create(state: GameState, identity?: GameIdentity) {
+    const now = new Date();
     const row: StoredGame = {
       id: state.id,
       state,
@@ -27,6 +29,7 @@ export class GameRepository {
       score: state.score,
       deviceId: identity?.deviceId ?? null,
       clientIp: identity?.clientIp ?? null,
+      updatedAt: now,
     };
 
     if (useMemory || !prisma) {
@@ -55,6 +58,7 @@ export class GameRepository {
 
   async save(state: GameState) {
     const existing = await this.findById(state.id);
+    const now = new Date();
     const row: StoredGame = {
       id: state.id,
       state,
@@ -62,6 +66,7 @@ export class GameRepository {
       score: state.score,
       deviceId: existing?.deviceId ?? null,
       clientIp: existing?.clientIp ?? null,
+      updatedAt: now,
     };
 
     if (useMemory || !prisma) {
@@ -77,6 +82,33 @@ export class GameRepository {
         score: state.score,
       },
     });
+  }
+
+
+  async deleteStaleUnfinished(olderThanDays = 15): Promise<number> {
+    const cutoff = new Date(Date.now() - olderThanDays * 24 * 60 * 60 * 1000);
+
+    if (useMemory || !prisma) {
+      let removed = 0;
+      for (const [id, row] of memory) {
+        if (
+          (row.status === 'DRAFT' || row.status === 'PLAYING') &&
+          row.updatedAt < cutoff
+        ) {
+          memory.delete(id);
+          removed += 1;
+        }
+      }
+      return removed;
+    }
+
+    const result = await prisma.game.deleteMany({
+      where: {
+        status: { in: ['DRAFT', 'PLAYING'] },
+        updatedAt: { lt: cutoff },
+      },
+    });
+    return result.count;
   }
 }
 

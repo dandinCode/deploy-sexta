@@ -21,6 +21,7 @@ model Game {
 
   @@index([deviceId])
   @@index([clientIp])
+  @@index([status, updatedAt])
 }
 
 enum GameStatus {
