@@ -126,7 +126,10 @@ export function RankingBoard({ highlightGameId, compact = false, className }: Pr
                     )}
                   >
                     <td className="py-2.5 pr-3">{entry.rank}</td>
-                    <td className="max-w-[140px] truncate py-2.5 pr-3">
+                    <td
+                      className="max-w-[140px] truncate py-2.5 pr-3"
+                      title={entry.playerName}
+                    >
                       {entry.playerName}
                     </td>
                     <td className="py-2.5 pr-3">
